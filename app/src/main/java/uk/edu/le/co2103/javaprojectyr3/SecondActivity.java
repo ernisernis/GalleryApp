@@ -24,12 +24,9 @@ public class SecondActivity extends AppCompatActivity {
         textreceived.setText(text);
 
         button2 = findViewById(R.id.button2);
-        button2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SecondActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
+        button2.setOnClickListener(v -> {
+            Intent intent = new Intent(SecondActivity.this, MainActivity.class);
+            startActivity(intent);
         });
     }
 }
