@@ -3,12 +3,12 @@ plugins {
 }
 
 android {
-    compileSdk 30
+    compileSdk 31
 
     defaultConfig {
         applicationId "uk.edu.le.co2103.javaprojectyr3"
         minSdk 23
-        targetSdk 30
+        targetSdk 31
         versionCode 1
         versionName "1.0"
 
@@ -32,9 +32,13 @@ android {
 
 dependencies {
 
-    implementation 'net.zetetic:android-database-sqlcipher:3.5.7@aar'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.3.0'
+    implementation 'net.zetetic:android-database-sqlcipher:4.5.0@aar' //3.5.7 to 4.5.0 changed
+    implementation 'androidx.sqlite:sqlite:2.2.0' //added this line
+
+
+
+    implementation 'androidx.appcompat:appcompat:1.4.1'    //it was 1.2.0
+    implementation 'com.google.android.material:material:1.5.0' // it was 1.3.0
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.navigation:navigation-fragment:2.3.5'
     implementation 'androidx.navigation:navigation-ui:2.3.5'
