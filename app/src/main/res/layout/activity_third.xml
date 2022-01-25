@@ -12,7 +12,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Go Back"
-        android:layout_centerInParent="true"
+        android:layout_marginLeft="200dp"
+        />
+
+    <Button
+        android:id="@+id/btnTakePicture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:text="Take a picture!"
         />
 
 </RelativeLayout>
