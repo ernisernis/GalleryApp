@@ -1,5 +1,6 @@
 package uk.edu.le.co2103.javaprojectyr3.DBHelper;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 
@@ -76,7 +77,7 @@ public class DBHelper extends SQLiteOpenHelper {
         List<String> emails = new ArrayList<>();
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
-                String email = cursor.getString(cursor.getColumnIndex(COLUMN_EMAIL));
+                @SuppressLint("Range") String email = cursor.getString(cursor.getColumnIndex(COLUMN_EMAIL));
                 emails.add(email);
                 cursor.moveToNext();
             }

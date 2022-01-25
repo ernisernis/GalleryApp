@@ -6,13 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText text;
-    Button clickMe;
-    String textHere;
+    Button clickMe, button2;
 
 
     @Override
@@ -21,15 +18,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         clickMe = findViewById(R.id.button);
-        text = findViewById(R.id.text);
+        button2 = findViewById(R.id.button2);
+
 
         clickMe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                textHere = text.getText().toString();
                 Intent intent = new Intent(MainActivity.this,SecondActivity.class);
-                intent.putExtra("Text", textHere);
+//                intent.putExtra("Text", textHere);
+                startActivity(intent);
+            }
+        });
+
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,ThirdActivity.class);
                 startActivity(intent);
             }
         });
