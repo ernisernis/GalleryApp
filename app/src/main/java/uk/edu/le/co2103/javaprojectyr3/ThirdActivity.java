@@ -2,16 +2,19 @@ package uk.edu.le.co2103.javaprojectyr3;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class ThirdActivity extends AppCompatActivity {
 
+    ImageView imageView;
     Button goBack, tkPicture;
     static final int REQUEST_IMAGE_CAPTURE = 1; //for camera
 
@@ -41,10 +44,17 @@ public class ThirdActivity extends AppCompatActivity {
 
     }
 
-//    @Override
-//    protected void OnActivityResult(int requestCode, int resultCode, Intent data) {
-//
-//    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            imageView = findViewById(R.id.imageView);
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            imageView.setImageBitmap(imageBitmap);
+
+        }
+    }
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
