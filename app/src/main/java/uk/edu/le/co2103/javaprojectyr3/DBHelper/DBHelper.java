@@ -16,16 +16,21 @@ public class DBHelper extends SQLiteOpenHelper {
     private static DBHelper instance;
 
     public static final int DATABASE_VER = 1;
-    private static final String DATABASE_NAME = "GalleryApp2.db"; //Added 2 to the name
+    private static final String DATABASE_NAME = "GalleryApp3.db"; //Added 2 to the name
 
     public static final String TABLE_NAME="CONTACTS";
+    public static final String TABLE_NAME2="IMAGE";
+
     public static final String COLUMN_EMAIL="EMAIL";
+    public static final String COLUMN_EMAIL2="IMAGE";
 
     public static final String PASS_PHARSE = "!@#ABC"; //password encrypt
 
     private static final String SQL_CREATE_TABLE_QUERY="CREATE TABLE "+TABLE_NAME+" ("+COLUMN_EMAIL+" TEXT PRIMARY KEY)";
+    private static final String SQL_CREATE_TABLE_QUERY2="CREATE TABLE "+TABLE_NAME2+" ("+COLUMN_EMAIL2+" TEXT PRIMARY KEY)";
 
     private static final String SQL_DELETE_TABLE_QUERY="DROP TABLE IF EXISTS " + TABLE_NAME;
+    private static final String SQL_DELETE_TABLE_QUERY2="DROP TABLE IF EXISTS " + TABLE_NAME2;
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VER);
@@ -39,11 +44,13 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(SQL_CREATE_TABLE_QUERY);
+        sqLiteDatabase.execSQL(SQL_CREATE_TABLE_QUERY2);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL(SQL_DELETE_TABLE_QUERY);
+        sqLiteDatabase.execSQL(SQL_DELETE_TABLE_QUERY2);
         onCreate(sqLiteDatabase);
     }
 
@@ -53,6 +60,13 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COLUMN_EMAIL, email);
         db.insert(TABLE_NAME,null,values);
+        db.close();
+    }
+    public void insertNewImage(String byteArray) {
+        SQLiteDatabase db = instance.getWritableDatabase(PASS_PHARSE);
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_EMAIL2, byteArray);
+        db.insert(TABLE_NAME2,null,values);
         db.close();
     }
     public void updateEmail (String oldEmail, String newEmail) {
