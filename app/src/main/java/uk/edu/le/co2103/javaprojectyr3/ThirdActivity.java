@@ -40,7 +40,6 @@ public class ThirdActivity extends AppCompatActivity {
     public static final int CAMERA_REQUEST_CODE = 131; //These numbers does not really matter, as long as they are different it's good.
 
     String currentPhotoPath;
-    ImageView imageView, imageView2;
     Button goBack, tkPicture;
     RecyclerView recyclerView;
 
@@ -52,8 +51,6 @@ public class ThirdActivity extends AppCompatActivity {
         SQLiteDatabase.loadLibs(this);
         goBack = findViewById(R.id.button);
         tkPicture = findViewById(R.id.btnTakePicture);
-        imageView = findViewById(R.id.imageView);
-        imageView2 = findViewById(R.id.imageView2);
 
         ArrayList<String> imagesByteArray = new ArrayList<>(DBHelper.getInstance(this).getAllImages());
         recyclerView = findViewById(R.id.recyclerView);
@@ -76,10 +73,8 @@ public class ThirdActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == CAMERA_REQUEST_CODE) {
-                File f = new File(currentPhotoPath);
-                imageView.setImageURI(Uri.fromFile(f));
                 DBHelper.getInstance(ThirdActivity.this).insertNewImage(Arrays.toString(readFile(currentPhotoPath)));
-//                reloadImages();
+                reloadImages();
         }
     }
     private void askCameraPermissions() {
