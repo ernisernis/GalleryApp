@@ -3,18 +3,12 @@ package uk.edu.le.co2103.javaprojectyr3;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
-import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,29 +22,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.sql.Blob;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
 
 import uk.edu.le.co2103.javaprojectyr3.DBHelper.DBHelper;
 
 public class ThirdActivity extends AppCompatActivity {
 
-    public static final int CAMERA_PERM_CODE = 121;
-    public static final int CAMERA_REQUEST_CODE = 131;
-    static final int REQUEST_TAKE_PHOTO = 1;
-    static final int REQUEST_IMAGE_CAPTURE = 1; //for camera
+    public static final int CAMERA_PERM_CODE = 121; //These numbers does not really matter, as long as they are different it's good.
+    public static final int CAMERA_REQUEST_CODE = 131; //These numbers does not really matter, as long as they are different it's good.
 
     String currentPhotoPath;
     ImageView imageView, imageView2;
@@ -74,42 +61,13 @@ public class ThirdActivity extends AppCompatActivity {
         recyclerView.setAdapter(myAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-//        List<String> abc = new ArrayList<>(DBHelper.getInstance(this).getAllImages());
-//        System.out.println(imagesByteArray.get(0));
-//        String ddd = imagesByteArray.get(0).replace("[","");
-//        ddd = ddd.replace("]","");
-//        System.out.println(ddd);
-//
-//        String[] bytesString = ddd.split(", ");
-//        byte[] bytes = new byte[bytesString.length];
-//        for(int i = 0 ; i < bytes.length ; ++i) {
-//            bytes[i] = Byte.parseByte(bytesString[i]);
-//        }
-//
-//        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-//        ImageView image = (ImageView) findViewById(R.id.imageView2);
-//        image.setImageBitmap(Bitmap.createScaledBitmap(bmp, 800, 800, false));
 
-//        reloadImages();
-
-
-        goBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ThirdActivity.this,MainActivity.class);
-                Log.d("A","Hello!");
-                Log.d("A", DBHelper.getInstance(ThirdActivity.this).getAllImages().toString());
-                startActivity(intent);
-            }
+        goBack.setOnClickListener(view -> {
+            Intent intent = new Intent(ThirdActivity.this,MainActivity.class);
+            startActivity(intent);
         });
 
-        tkPicture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                askCameraPermissions();
-//                dispatchTakePictureIntent();
-            }
-        });
+        tkPicture.setOnClickListener(view -> askCameraPermissions());
 
 
     }
@@ -119,19 +77,15 @@ public class ThirdActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == CAMERA_REQUEST_CODE) {
                 File f = new File(currentPhotoPath);
-                System.out.println(f);
-                System.out.println(Arrays.toString(readFile(currentPhotoPath)));
                 imageView.setImageURI(Uri.fromFile(f));
                 DBHelper.getInstance(ThirdActivity.this).insertNewImage(Arrays.toString(readFile(currentPhotoPath)));
 //                reloadImages();
-
         }
     }
     private void askCameraPermissions() {
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, CAMERA_PERM_CODE);
         } else {
-//            openCamera();
             dispatchTakePictureIntent();
         }
     }
@@ -141,8 +95,6 @@ public class ThirdActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == CAMERA_PERM_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // open the camera;
-                // openCamera();
                 dispatchTakePictureIntent();
             } else {
                 Toast.makeText(this, "Need Camera Permission!", Toast.LENGTH_SHORT).show();
@@ -152,13 +104,12 @@ public class ThirdActivity extends AppCompatActivity {
 
 
     private File createImageFile() throws IOException {
-        //creating timestamp of the file
         String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timestamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,
-                ".jpg",
+                ".png",
                 storageDir
         );
         currentPhotoPath = image.getAbsolutePath();
@@ -171,7 +122,7 @@ public class ThirdActivity extends AppCompatActivity {
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
-                // erorr
+                Toast.makeText(ThirdActivity.this, "Error processing image file! : " + ex, Toast.LENGTH_LONG).show();
             }
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(this, "com.example.android.fileprovider", photoFile);
@@ -190,10 +141,19 @@ public class ThirdActivity extends AppCompatActivity {
                 bos.write(buffer, 0, len);
             }
         } catch (FileNotFoundException e) {
-            System.err.println(e.getMessage());
+            Toast.makeText(ThirdActivity.this, "Error reading a photo! : " + e.getMessage(), Toast.LENGTH_LONG).show();
         } catch (IOException e2) {
-            System.err.println(e2.getMessage());
+            Toast.makeText(ThirdActivity.this, "Error reading a photo! : " + e2.getMessage(), Toast.LENGTH_LONG).show();
         }
         return bos != null ? bos.toByteArray() : null;
+    }
+    private void reloadImages() {
+
+        ArrayList<String> imagesByteArray = new ArrayList<>(DBHelper.getInstance(this).getAllImages());
+        recyclerView = findViewById(R.id.recyclerView);
+        RVAdapter myAdapter = new RVAdapter(this,imagesByteArray);
+        recyclerView.setAdapter(myAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
     }
 }
