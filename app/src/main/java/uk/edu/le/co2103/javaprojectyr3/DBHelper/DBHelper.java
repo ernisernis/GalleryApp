@@ -101,4 +101,21 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return emails;
     }
+    public List<String> getAllImages() {
+        SQLiteDatabase db = instance.getWritableDatabase(PASS_PHARSE);
+
+        Cursor cursor = db.rawQuery(String.format("SELECT * FROM '%s';", TABLE_NAME2), null);
+        List<String> images = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                @SuppressLint("Range") String image = cursor.getString(cursor.getColumnIndex(COLUMN_EMAIL2));
+                images.add(image);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+
+        return images;
+    }
 }
