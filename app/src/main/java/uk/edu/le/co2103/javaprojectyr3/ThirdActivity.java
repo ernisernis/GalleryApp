@@ -3,13 +3,18 @@ package uk.edu.le.co2103.javaprojectyr3;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,6 +23,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
@@ -30,8 +37,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Blob;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
 
 import uk.edu.le.co2103.javaprojectyr3.DBHelper.DBHelper;
@@ -44,8 +53,9 @@ public class ThirdActivity extends AppCompatActivity {
     static final int REQUEST_IMAGE_CAPTURE = 1; //for camera
 
     String currentPhotoPath;
-    ImageView imageView;
+    ImageView imageView, imageView2;
     Button goBack, tkPicture;
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +66,39 @@ public class ThirdActivity extends AppCompatActivity {
         goBack = findViewById(R.id.button);
         tkPicture = findViewById(R.id.btnTakePicture);
         imageView = findViewById(R.id.imageView);
+        imageView2 = findViewById(R.id.imageView2);
+
+        ArrayList<String> imagesByteArray = new ArrayList<>(DBHelper.getInstance(this).getAllImages());
+        recyclerView = findViewById(R.id.recyclerView);
+        RVAdapter myAdapter = new RVAdapter(this,imagesByteArray);
+        recyclerView.setAdapter(myAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+//        List<String> abc = new ArrayList<>(DBHelper.getInstance(this).getAllImages());
+//        System.out.println(imagesByteArray.get(0));
+//        String ddd = imagesByteArray.get(0).replace("[","");
+//        ddd = ddd.replace("]","");
+//        System.out.println(ddd);
+//
+//        String[] bytesString = ddd.split(", ");
+//        byte[] bytes = new byte[bytesString.length];
+//        for(int i = 0 ; i < bytes.length ; ++i) {
+//            bytes[i] = Byte.parseByte(bytesString[i]);
+//        }
+//
+//        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//        ImageView image = (ImageView) findViewById(R.id.imageView2);
+//        image.setImageBitmap(Bitmap.createScaledBitmap(bmp, 800, 800, false));
+
+//        reloadImages();
+
 
         goBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ThirdActivity.this,MainActivity.class);
+                Log.d("A","Hello!");
+                Log.d("A", DBHelper.getInstance(ThirdActivity.this).getAllImages().toString());
                 startActivity(intent);
             }
         });
@@ -85,6 +123,7 @@ public class ThirdActivity extends AppCompatActivity {
                 System.out.println(Arrays.toString(readFile(currentPhotoPath)));
                 imageView.setImageURI(Uri.fromFile(f));
                 DBHelper.getInstance(ThirdActivity.this).insertNewImage(Arrays.toString(readFile(currentPhotoPath)));
+//                reloadImages();
 
         }
     }
