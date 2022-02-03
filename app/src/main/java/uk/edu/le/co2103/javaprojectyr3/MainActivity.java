@@ -78,55 +78,7 @@ public class MainActivity extends AppCompatActivity {
         button4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                KeyStore keyStore = null;
-                try {
-                    keyStore = KeyStore.getInstance("AndroidKeyStore");
-                } catch (KeyStoreException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    keyStore.load(null);
-                } catch (CertificateException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    KeyStore keyStoreA = KeyStore.getInstance("AndroidKeyStore");
-                    keyStoreA.load(null);
-                    System.out.println("-------------");
-                    System.out.println(keyStoreA.containsAlias("key6"));
-                    System.out.println("-------------");
-                    SecretKey keyA = (SecretKey) keyStoreA.getKey("key6",null);
-                    System.out.println(keyA);
-
-                    System.out.println("0000000000000000000000");
-
-                    KeyStore keyStoreB = KeyStore.getInstance("AndroidKeyStore");
-                    keyStoreB.load(null);
-                    System.out.println("-------------");
-                    System.out.println(keyStoreB.containsAlias("key6"));
-                    System.out.println("-------------");
-//                    System.out.println(keyStoreB.getKey("key5",null));
-                    SecretKey keyB = (SecretKey) keyStoreB.getKey("key6",null);
-                    System.out.println(keyB);
-                    ////////////
-//                    SecretKey key = (SecretKey) keyStore.getKey("key2", null);
-//                    Toast.makeText(MainActivity.this, (CharSequence) key, Toast.LENGTH_SHORT).show();
-//                    System.out.println(key);
-                } catch (KeyStoreException e) {
-                    e.printStackTrace();
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                } catch (CertificateException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (UnrecoverableKeyException e) {
-                    e.printStackTrace();
-                }
+                System.out.println(getSecretKey());
             }
         });
         button5.setOnClickListener(new View.OnClickListener() {
@@ -190,5 +142,21 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     return keyGenerator.generateKey();
+    }
+
+
+    private static SecretKey getSecretKey() {
+
+        KeyStore keyStore = null;
+        try {
+            keyStore = KeyStore.getInstance("AndroidKeyStore");
+            keyStore.load(null);
+            keyStore = KeyStore.getInstance("AndroidKeyStore");
+            return (SecretKey) keyStore.getKey(keyAlias,null);
+
+        } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException | UnrecoverableKeyException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
