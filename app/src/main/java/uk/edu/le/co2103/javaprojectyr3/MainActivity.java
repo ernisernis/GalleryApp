@@ -134,7 +134,6 @@ public class MainActivity extends AppCompatActivity {
             keyGenerator.init(
                     new KeyGenParameterSpec.Builder(keyAlias,
                             KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
-//                                    KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
                             .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
                             .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
                             .build());
@@ -151,7 +150,6 @@ public class MainActivity extends AppCompatActivity {
         try {
             keyStore = KeyStore.getInstance("AndroidKeyStore");
             keyStore.load(null);
-            keyStore = KeyStore.getInstance("AndroidKeyStore");
             return (SecretKey) keyStore.getKey(keyAlias,null);
 
         } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException | UnrecoverableKeyException e) {
