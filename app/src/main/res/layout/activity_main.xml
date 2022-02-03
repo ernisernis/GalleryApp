@@ -11,9 +11,9 @@
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
-        android:layout_centerInParent="true"
-        />
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="152dp"
+        android:text="Button" />
 
     <Button
         android:layout_width="wrap_content"
@@ -50,4 +50,11 @@
         android:layout_below="@id/button5"
         android:layout_centerInParent="true"
         android:text="GeneratePasswordTest" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button7"
+        android:layout_below="@id/button6"
+        android:layout_centerInParent="true"
+        android:text="Encryption" />
 </RelativeLayout>

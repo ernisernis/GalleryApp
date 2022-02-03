@@ -22,10 +22,11 @@ import java.security.NoSuchProviderException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.Random;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
@@ -34,7 +35,7 @@ import javax.crypto.SecretKey;
 public class MainActivity extends AppCompatActivity {
 
     private static final String keyAlias = "key49";
-    Button clickMe, button2, button3,button4, button5, button6;
+    Button clickMe, button2, button3,button4, button5, button6,button7;
 
 
     @Override
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         button4 = findViewById(R.id.button4);
         button5 = findViewById(R.id.button5);
         button6 = findViewById(R.id.button6);
+        button7 = findViewById(R.id.button7);
 
         clickMe.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,17 +98,33 @@ public class MainActivity extends AppCompatActivity {
         button6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                char[] abc = generatePassword();
-//                System.out.println(Arrays.toString(abc));
-                String stringPW = new String(abc);
-                System.out.println(stringPW);
+                System.out.println(generatePassword());
                 Toast.makeText(MainActivity.this, "Button6 clicked!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        button7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    System.out.println(Arrays.toString(encrypt(generatePassword())));
+                } catch (NoSuchPaddingException e) {
+                    e.printStackTrace();
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                } catch (InvalidKeyException e) {
+                    e.printStackTrace();
+                } catch (BadPaddingException e) {
+                    e.printStackTrace();
+                } catch (IllegalBlockSizeException e) {
+                    e.printStackTrace();
+                }
+                Toast.makeText(MainActivity.this, "Button7 or Encryption pressed!", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
 
-    private static char[] generatePassword(){
+    private static String generatePassword(){
         String letters = "ABCDEFGHIJKLMNOPRQSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         String numbers = "0123456789";
         String specialChar = "!@#$%^&*";
@@ -117,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i<32;i++) {
             newPass[i] = pwa.charAt(r.nextInt(pwa.length()));
         }
-        return newPass;
+        return new String(newPass);
     }
     private static SecretKey generateSecretKey() {
 
@@ -156,5 +174,12 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private static byte[] encrypt(String data) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        cipher.init(Cipher.ENCRYPT_MODE, getSecretKey());
+        byte[] iv = cipher.getIV();
+        return cipher.doFinal(data.getBytes());
     }
 }
