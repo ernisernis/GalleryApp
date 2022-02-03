@@ -33,6 +33,7 @@ import javax.crypto.SecretKey;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String keyAlias = "key49";
     Button clickMe, button2, button3,button4, button5, button6;
 
 
@@ -70,28 +71,7 @@ public class MainActivity extends AppCompatActivity {
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                KeyGenerator keyGenerator = null;
-                try {
-                    keyGenerator = KeyGenerator.getInstance(
-                            KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                } catch (NoSuchProviderException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    keyGenerator.init(
-                            new KeyGenParameterSpec.Builder("key6",
-                                        KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
-//                                    KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
-                                    .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
-                                    .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
-                                    .build());
-                    keyGenerator.generateKey();
-                    Toast.makeText(MainActivity.this, "I am here!", Toast.LENGTH_SHORT).show();
-                } catch (InvalidAlgorithmParameterException e) {
-                    e.printStackTrace();
-                }
+                System.out.println(generateSecretKey());
             }
         });
 
@@ -186,5 +166,29 @@ public class MainActivity extends AppCompatActivity {
             newPass[i] = pwa.charAt(r.nextInt(pwa.length()));
         }
         return newPass;
+    }
+    private static SecretKey generateSecretKey() {
+
+        KeyGenerator keyGenerator = null;
+        try {
+            keyGenerator = KeyGenerator.getInstance(
+                    KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        }
+        try {
+            keyGenerator.init(
+                    new KeyGenParameterSpec.Builder(keyAlias,
+                            KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
+//                                    KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
+                            .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+                            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+                            .build());
+        } catch (InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
+        }
+    return keyGenerator.generateKey();
     }
 }
