@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         clickMe = findViewById(R.id.button);
         button2 = findViewById(R.id.button2);
         button3 = findViewById(R.id.button3);
@@ -58,101 +57,73 @@ public class MainActivity extends AppCompatActivity {
         button7 = findViewById(R.id.button7);
         button8 = findViewById(R.id.button8);
 
-        clickMe.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        clickMe.setOnClickListener(v -> {
 
-                Intent intent = new Intent(MainActivity.this,SecondActivity.class);
+            Intent intent = new Intent(MainActivity.this,SecondActivity.class);
 //                intent.putExtra("Text", textHere);
-                startActivity(intent);
-            }
+            startActivity(intent);
         });
 
-        button2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,ThirdActivity.class);
-                startActivity(intent);
-            }
+        button2.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this,ThirdActivity.class);
+            startActivity(intent);
         });
 
-        button3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                System.out.println(generateSecretKey());
-            }
+        button3.setOnClickListener(view -> System.out.println(generateSecretKey()));
+
+        button4.setOnClickListener(view -> System.out.println(getSecretKey()));
+
+        button5.setOnClickListener(v -> {
+
+            SharedPreferences sharedpreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.putString("nameKey", "Hello");
+            editor.commit();
+            Toast.makeText(MainActivity.this, "Button5 Pressed!", Toast.LENGTH_SHORT).show();
         });
 
-        button4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                System.out.println(getSecretKey());
-            }
+        button6.setOnClickListener(v -> {
+            System.out.println(generatePassword());
+            Toast.makeText(MainActivity.this, "Button6 clicked!", Toast.LENGTH_SHORT).show();
         });
 
-        button5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                SharedPreferences sharedpreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedpreferences.edit();
-                editor.putString("nameKey", "Hello");
-                editor.commit();
-                Toast.makeText(MainActivity.this, "Button5 Pressed!", Toast.LENGTH_SHORT).show();
+        button7.setOnClickListener(view -> {
+            try {
+                String password = generatePassword();
+                System.out.println(password + " <- generated password");
+                encryptedByteArray = encrypt(password);
+                System.out.println(Arrays.toString(encryptedByteArray));
+            } catch (NoSuchPaddingException e) {
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (InvalidKeyException e) {
+                e.printStackTrace();
+            } catch (BadPaddingException e) {
+                e.printStackTrace();
+            } catch (IllegalBlockSizeException e) {
+                e.printStackTrace();
             }
+            Toast.makeText(MainActivity.this, "Button7 or Encryption pressed!", Toast.LENGTH_SHORT).show();
         });
 
-        button6.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                System.out.println(generatePassword());
-                Toast.makeText(MainActivity.this, "Button6 clicked!", Toast.LENGTH_SHORT).show();
+        button8.setOnClickListener(view -> {
+            try {
+                System.out.println(decrypt(encryptedByteArray));
+            } catch (NoSuchPaddingException e) {
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (InvalidAlgorithmParameterException e) {
+                e.printStackTrace();
+            } catch (InvalidKeyException e) {
+                e.printStackTrace();
+            } catch (BadPaddingException e) {
+                e.printStackTrace();
+            } catch (IllegalBlockSizeException e) {
+                e.printStackTrace();
             }
-        });
-
-        button7.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    String password = generatePassword();
-                    System.out.println(password + " <- generated password");
-                    encryptedByteArray = encrypt(password);
-                    System.out.println(Arrays.toString(encryptedByteArray));
-                } catch (NoSuchPaddingException e) {
-                    e.printStackTrace();
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                } catch (InvalidKeyException e) {
-                    e.printStackTrace();
-                } catch (BadPaddingException e) {
-                    e.printStackTrace();
-                } catch (IllegalBlockSizeException e) {
-                    e.printStackTrace();
-                }
-                Toast.makeText(MainActivity.this, "Button7 or Encryption pressed!", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        button8.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    System.out.println(decrypt(encryptedByteArray));
-                } catch (NoSuchPaddingException e) {
-                    e.printStackTrace();
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                } catch (InvalidAlgorithmParameterException e) {
-                    e.printStackTrace();
-                } catch (InvalidKeyException e) {
-                    e.printStackTrace();
-                } catch (BadPaddingException e) {
-                    e.printStackTrace();
-                } catch (IllegalBlockSizeException e) {
-                    e.printStackTrace();
-                }
-                Toast.makeText(MainActivity.this, "Button 8 or Decryption Pressed!", Toast.LENGTH_SHORT).show();
-            }
+            Toast.makeText(MainActivity.this, "Button 8 or Decryption Pressed!", Toast.LENGTH_SHORT).show();
         });
     }
 
