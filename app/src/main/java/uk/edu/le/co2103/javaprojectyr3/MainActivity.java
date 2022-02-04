@@ -40,12 +40,10 @@ import uk.edu.le.co2103.javaprojectyr3.DBHelper.DBHelper;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static MainActivity instance;
 
-    private static final String keyAlias = "key49";
+    private static final String keyAlias = "key10";
     private static byte[] iv;
-    private static byte[] encryptedByteArray;
-    Button clickMe, button2, button3,button4, button5, button6,button7, button8;
+    Button clickMe, button2;
 
 
     @Override
@@ -60,12 +58,6 @@ public class MainActivity extends AppCompatActivity {
 
         clickMe = findViewById(R.id.button);
         button2 = findViewById(R.id.button2);
-        button3 = findViewById(R.id.button3);
-        button4 = findViewById(R.id.button4);
-        button5 = findViewById(R.id.button5);
-        button6 = findViewById(R.id.button6);
-        button7 = findViewById(R.id.button7);
-        button8 = findViewById(R.id.button8);
 
         clickMe.setOnClickListener(v -> {
 
@@ -79,67 +71,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        button3.setOnClickListener(view -> System.out.println(generateSecretKey()));
-
-        button4.setOnClickListener(view -> System.out.println(getSecretKey()));
-
-        button5.setOnClickListener(v -> {
-
-            SharedPreferences sharedPreferences = getSharedPreferences("encryptedInfo", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("encByteArray", Arrays.toString(encryptedByteArray));
-            editor.putString("SharedIV", Arrays.toString(iv));
-            editor.commit();
-//            SharedPreferences sharedpreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-//            SharedPreferences.Editor editor = sharedpreferences.edit();
-//            editor.putString("nameKey", "Hello");
-//            editor.commit();
-            Toast.makeText(MainActivity.this, "Button5 Pressed!", Toast.LENGTH_SHORT).show();
-        });
-
-        button6.setOnClickListener(v -> {
-            System.out.println(generatePassword());
-            Toast.makeText(MainActivity.this, "Button6 clicked!", Toast.LENGTH_SHORT).show();
-        });
-
-        button7.setOnClickListener(view -> {
-            try {
-                String password = generatePassword();
-                System.out.println(password + " <- generated password");
-                encryptedByteArray = encrypt(password);
-                System.out.println(Arrays.toString(encryptedByteArray));
-            } catch (NoSuchPaddingException e) {
-                e.printStackTrace();
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            } catch (InvalidKeyException e) {
-                e.printStackTrace();
-            } catch (BadPaddingException e) {
-                e.printStackTrace();
-            } catch (IllegalBlockSizeException e) {
-                e.printStackTrace();
-            }
-            Toast.makeText(MainActivity.this, "Button7 or Encryption pressed!", Toast.LENGTH_SHORT).show();
-        });
-
-        button8.setOnClickListener(view -> {
-            try {
-                System.out.println(decrypt(encryptedByteArray));
-            } catch (NoSuchPaddingException e) {
-                e.printStackTrace();
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            } catch (InvalidAlgorithmParameterException e) {
-                e.printStackTrace();
-            } catch (InvalidKeyException e) {
-                e.printStackTrace();
-            } catch (BadPaddingException e) {
-                e.printStackTrace();
-            } catch (IllegalBlockSizeException e) {
-                e.printStackTrace();
-            }
-            Toast.makeText(MainActivity.this, "Button 8 or Decryption Pressed!", Toast.LENGTH_SHORT).show();
-        });
     }
 
     private static String generatePassword(){
@@ -156,28 +87,23 @@ public class MainActivity extends AppCompatActivity {
         return new String(newPass);
     }
 
-    private static SecretKey generateSecretKey() {
+    private void generateSecretKey() {
 
         KeyGenerator keyGenerator = null;
         try {
             keyGenerator = KeyGenerator.getInstance(
                     KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchProviderException e) {
-            e.printStackTrace();
-        }
-        try {
             keyGenerator.init(
                     new KeyGenParameterSpec.Builder(keyAlias,
                             KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
                             .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
                             .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
                             .build());
-        } catch (InvalidAlgorithmParameterException e) {
+            keyGenerator.generateKey();
+            System.out.println("SecretKey generated!");
+        } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidAlgorithmParameterException e) {
             e.printStackTrace();
         }
-    return keyGenerator.generateKey();
     }
 
     private static SecretKey getSecretKey() {
@@ -213,21 +139,24 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("encryptedInfo",MODE_PRIVATE);
         String checkEncArray = sharedPreferences.getString("encByteArray",null);
         if (checkEncArray == null) {
-            // User launches the application for the first time. Create getPassword()
+            // User launches the application for the first time. Create SecretKey, Create getPassword()
             // encrypt, save in SharedPreferences, <<<proceed with FingerPrint?>>>>
 
-            // Generating a password and putting encrypted version of it into global byte[]
-            encryptedByteArray = encrypt(generatePassword());
+            // Generating a secreyKey under certain alias
+            generateSecretKey();
+
+            // Generating a password and putting encrypted version of it into  byte[]
+            byte[] encryptedByteArray = encrypt(generatePassword());
 
             // Save encrypted Byte Array to the Saved Preferences, with IV
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("encByteArray", Arrays.toString(encryptedByteArray));
             editor.putString("SharedIV", Arrays.toString(iv));
             editor.apply();
-            System.out.println("ABC");
+            System.out.println("Initialize Fingerprint");
         } else {
-            // The User launches the application not for the first time, proceed with fingerprint.
-            System.out.println("DEFG");
+            // The User launches the application NOT for the first time, proceed with fingerprint.
+            System.out.println("Initialize Fingerprint");
         }
     }
 
