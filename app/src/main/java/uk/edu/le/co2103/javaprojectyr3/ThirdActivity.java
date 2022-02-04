@@ -56,6 +56,7 @@ public class ThirdActivity extends AppCompatActivity {
     public static final int CAMERA_PERM_CODE = 121; //These numbers does not really matter, as long as they are different it's good.
     public static final int CAMERA_REQUEST_CODE = 131; //These numbers does not really matter, as long as they are different it's good.
     private static final String keyAlias = "key49";
+    private static byte[] finalIv;
 
     String currentPhotoPath;
     Button goBack, tkPicture, button2;
@@ -101,8 +102,24 @@ public class ThirdActivity extends AppCompatActivity {
             for (int i = 0; i < split2.length;i++) {
                 iv[i] = Byte.parseByte(split2[i]);
             }
+            finalIv = iv;
             System.out.println(Arrays.toString(array));
             System.out.println(Arrays.toString(iv));
+            try {
+                System.out.println(decrypt(array));
+            } catch (NoSuchPaddingException e) {
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (InvalidAlgorithmParameterException e) {
+                e.printStackTrace();
+            } catch (InvalidKeyException e) {
+                e.printStackTrace();
+            } catch (BadPaddingException e) {
+                e.printStackTrace();
+            } catch (IllegalBlockSizeException e) {
+                e.printStackTrace();
+            }
 
             Toast.makeText(ThirdActivity.this, "Prefs button pressed!", Toast.LENGTH_SHORT).show();
         });
@@ -209,6 +226,14 @@ public class ThirdActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private static String decrypt (byte[] encrypted) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        GCMParameterSpec spec = new GCMParameterSpec(128, finalIv);
+        cipher.init(Cipher.DECRYPT_MODE,getSecretKey(),spec);
+        byte[] decoded = cipher.doFinal(encrypted);
+        return new String(decoded, StandardCharsets.UTF_8);
     }
 
 }
