@@ -24,6 +24,7 @@ import java.security.NoSuchProviderException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Random;
 
 import javax.crypto.BadPaddingException;
@@ -34,8 +35,12 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 
+import uk.edu.le.co2103.javaprojectyr3.DBHelper.DBHelper;
+
 
 public class MainActivity extends AppCompatActivity {
+
+    private static MainActivity instance;
 
     private static final String keyAlias = "key49";
     private static byte[] iv;
@@ -75,10 +80,15 @@ public class MainActivity extends AppCompatActivity {
 
         button5.setOnClickListener(v -> {
 
-            SharedPreferences sharedpreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedpreferences.edit();
-            editor.putString("nameKey", "Hello");
+            SharedPreferences sharedPreferences = getSharedPreferences("encryptedInfo", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("encByteArray", Arrays.toString(encryptedByteArray));
+            editor.putString("SharedIV", Arrays.toString(iv));
             editor.commit();
+//            SharedPreferences sharedpreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+//            SharedPreferences.Editor editor = sharedpreferences.edit();
+//            editor.putString("nameKey", "Hello");
+//            editor.commit();
             Toast.makeText(MainActivity.this, "Button5 Pressed!", Toast.LENGTH_SHORT).show();
         });
 

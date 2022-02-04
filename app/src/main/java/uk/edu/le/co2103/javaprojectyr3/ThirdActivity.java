@@ -2,6 +2,7 @@ package uk.edu.le.co2103.javaprojectyr3;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,10 +29,25 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.GCMParameterSpec;
 
 import uk.edu.le.co2103.javaprojectyr3.DBHelper.DBHelper;
 
@@ -39,9 +55,10 @@ public class ThirdActivity extends AppCompatActivity {
 
     public static final int CAMERA_PERM_CODE = 121; //These numbers does not really matter, as long as they are different it's good.
     public static final int CAMERA_REQUEST_CODE = 131; //These numbers does not really matter, as long as they are different it's good.
+    private static final String keyAlias = "key49";
 
     String currentPhotoPath;
-    Button goBack, tkPicture;
+    Button goBack, tkPicture, button2;
     RecyclerView recyclerView;
 
     @Override
@@ -52,6 +69,7 @@ public class ThirdActivity extends AppCompatActivity {
         SQLiteDatabase.loadLibs(this);
         goBack = findViewById(R.id.button);
         tkPicture = findViewById(R.id.btnTakePicture);
+        button2 = findViewById(R.id.button2);
 
         ArrayList<String> imagesByteArray = new ArrayList<>(DBHelper.getInstance(this).getAllImages());
         recyclerView = findViewById(R.id.recyclerView);
@@ -69,6 +87,25 @@ public class ThirdActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        button2.setOnClickListener(view -> {
+            SharedPreferences settings = getSharedPreferences("encryptedInfo",MODE_PRIVATE);
+            String byteArray = settings.getString("encByteArray",null);
+            String byteIv = settings.getString("SharedIV",null);
+            String[] split = byteArray.substring(1, byteArray.length()-1).split(", ");
+            String[] split2 = byteIv.substring(1, byteIv.length()-1).split(", ");
+            byte[] array = new byte[split.length];
+            byte[] iv = new byte[split2.length];
+            for (int i = 0; i < split.length; i++) {
+                array[i] = Byte.parseByte(split[i]);
+            }
+            for (int i = 0; i < split2.length;i++) {
+                iv[i] = Byte.parseByte(split2[i]);
+            }
+            System.out.println(Arrays.toString(array));
+            System.out.println(Arrays.toString(iv));
+
+            Toast.makeText(ThirdActivity.this, "Prefs button pressed!", Toast.LENGTH_SHORT).show();
+        });
         tkPicture.setOnClickListener(view -> askCameraPermissions());
 
 
@@ -159,4 +196,19 @@ public class ThirdActivity extends AppCompatActivity {
         recyclerView.setAdapter(myAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
+
+    private static SecretKey getSecretKey() {
+
+        KeyStore keyStore = null;
+        try {
+            keyStore = KeyStore.getInstance("AndroidKeyStore");
+            keyStore.load(null);
+            return (SecretKey) keyStore.getKey(keyAlias,null);
+
+        } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException | UnrecoverableKeyException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
