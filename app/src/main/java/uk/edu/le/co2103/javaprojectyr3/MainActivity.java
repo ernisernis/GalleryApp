@@ -50,8 +50,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         try {
-            checkExistingCreds();
+            init();
         } catch (IllegalBlockSizeException | InvalidKeyException | BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException e) {
             e.printStackTrace();
         }
@@ -134,7 +135,8 @@ public class MainActivity extends AppCompatActivity {
         byte[] decoded = cipher.doFinal(encrypted);
         return new String(decoded, StandardCharsets.UTF_8);
     }
-    private void checkExistingCreds() throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
+
+    private void init() throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
 
         SharedPreferences sharedPreferences = getSharedPreferences("encryptedInfo",MODE_PRIVATE);
         String checkEncArray = sharedPreferences.getString("encByteArray",null);
