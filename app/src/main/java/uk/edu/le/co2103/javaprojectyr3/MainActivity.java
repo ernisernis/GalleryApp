@@ -52,6 +52,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        try {
+            checkExistingCreds();
+        } catch (IllegalBlockSizeException | InvalidKeyException | BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException e) {
+            e.printStackTrace();
+        }
 
         clickMe = findViewById(R.id.button);
         button2 = findViewById(R.id.button2);
@@ -203,4 +208,27 @@ public class MainActivity extends AppCompatActivity {
         byte[] decoded = cipher.doFinal(encrypted);
         return new String(decoded, StandardCharsets.UTF_8);
     }
+    private void checkExistingCreds() throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
+
+        SharedPreferences sharedPreferences = getSharedPreferences("encryptedInfo",MODE_PRIVATE);
+        String checkEncArray = sharedPreferences.getString("encByteArray",null);
+        if (checkEncArray == null) {
+            // User launches the application for the first time. Create getPassword()
+            // encrypt, save in SharedPreferences, <<<proceed with FingerPrint?>>>>
+
+            // Generating a password and putting encrypted version of it into global byte[]
+            encryptedByteArray = encrypt(generatePassword());
+
+            // Save encrypted Byte Array to the Saved Preferences, with IV
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("encByteArray", Arrays.toString(encryptedByteArray));
+            editor.putString("SharedIV", Arrays.toString(iv));
+            editor.apply();
+            System.out.println("ABC");
+        } else {
+            // The User launches the application not for the first time, proceed with fingerprint.
+            System.out.println("DEFG");
+        }
+    }
+
 }
