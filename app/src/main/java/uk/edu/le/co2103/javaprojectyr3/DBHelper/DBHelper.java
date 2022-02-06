@@ -3,6 +3,7 @@ package uk.edu.le.co2103.javaprojectyr3.DBHelper;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;

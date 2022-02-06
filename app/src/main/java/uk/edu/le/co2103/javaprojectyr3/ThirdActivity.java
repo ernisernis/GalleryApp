@@ -55,7 +55,9 @@ public class ThirdActivity extends AppCompatActivity {
 
     public static final int CAMERA_PERM_CODE = 121; //These numbers does not really matter, as long as they are different it's good.
     public static final int CAMERA_REQUEST_CODE = 131; //These numbers does not really matter, as long as they are different it's good.
-    private static final String keyAlias = "key49";
+    private static final String keyAlias = "key10";
+
+
     private static byte[] finalIv;
 
     String currentPhotoPath;
@@ -68,6 +70,24 @@ public class ThirdActivity extends AppCompatActivity {
         setContentView(R.layout.activity_third);
 
         SQLiteDatabase.loadLibs(this);
+
+
+        try {
+            System.out.println(passwordToDb());
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
+        }
+
         goBack = findViewById(R.id.button);
         tkPicture = findViewById(R.id.btnTakePicture);
         button2 = findViewById(R.id.button2);
@@ -105,21 +125,21 @@ public class ThirdActivity extends AppCompatActivity {
             finalIv = iv;
             System.out.println(Arrays.toString(array));
             System.out.println(Arrays.toString(iv));
-            try {
-                System.out.println(decrypt(array));
-            } catch (NoSuchPaddingException e) {
-                e.printStackTrace();
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            } catch (InvalidAlgorithmParameterException e) {
-                e.printStackTrace();
-            } catch (InvalidKeyException e) {
-                e.printStackTrace();
-            } catch (BadPaddingException e) {
-                e.printStackTrace();
-            } catch (IllegalBlockSizeException e) {
-                e.printStackTrace();
-            }
+//            try {
+////                System.out.println(decrypt(array));
+//            } catch (NoSuchPaddingException e) {
+//                e.printStackTrace();
+//            } catch (NoSuchAlgorithmException e) {
+//                e.printStackTrace();
+//            } catch (InvalidAlgorithmParameterException e) {
+//                e.printStackTrace();
+//            } catch (InvalidKeyException e) {
+//                e.printStackTrace();
+//            } catch (BadPaddingException e) {
+//                e.printStackTrace();
+//            } catch (IllegalBlockSizeException e) {
+//                e.printStackTrace();
+//            }
 
             Toast.makeText(ThirdActivity.this, "Prefs button pressed!", Toast.LENGTH_SHORT).show();
         });
@@ -127,6 +147,7 @@ public class ThirdActivity extends AppCompatActivity {
 
 
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -228,12 +249,29 @@ public class ThirdActivity extends AppCompatActivity {
         return null;
     }
 
-    private static String decrypt (byte[] encrypted) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+    private static String decrypt (byte[] encrypted, byte[] pwIv) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-        GCMParameterSpec spec = new GCMParameterSpec(128, finalIv);
+        GCMParameterSpec spec = new GCMParameterSpec(128, pwIv);
         cipher.init(Cipher.DECRYPT_MODE,getSecretKey(),spec);
         byte[] decoded = cipher.doFinal(encrypted);
         return new String(decoded, StandardCharsets.UTF_8);
+    }
+
+    private String passwordToDb() throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+
+        SharedPreferences settings = getSharedPreferences("encryptedInfo",MODE_PRIVATE);
+        String byteArray = settings.getString("encByteArray",null);
+        String byteIv = settings.getString("SharedIV",null);
+        return decrypt(strToByteArrConverter(byteArray),strToByteArrConverter(byteIv));
+    }
+
+    private byte[] strToByteArrConverter(String data) {
+        String[] split = data.substring(1, data.length()-1).split(", ");
+        byte[] array = new byte[split.length];
+        for (int i = 0; i < split.length; i++) {
+            array[i] = Byte.parseByte(split[i]);
+        }
+        return array;
     }
 
 }
