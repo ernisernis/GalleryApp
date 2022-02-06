@@ -92,7 +92,22 @@ public class ThirdActivity extends AppCompatActivity {
         tkPicture = findViewById(R.id.btnTakePicture);
         button2 = findViewById(R.id.button2);
 
-        ArrayList<String> imagesByteArray = new ArrayList<>(DBHelper.getInstance(this).getAllImages());
+        ArrayList<String> imagesByteArray = null;
+        try {
+            imagesByteArray = new ArrayList<>(DBHelper.getInstance(this).getAllImages(passwordToDb()));
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
+        }
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setItemViewCacheSize(20);
         recyclerView.setDrawingCacheEnabled(true);
@@ -153,8 +168,36 @@ public class ThirdActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == CAMERA_REQUEST_CODE) {
-                DBHelper.getInstance(ThirdActivity.this).insertNewImage(Arrays.toString(readFile(currentPhotoPath)));
+            try {
+                DBHelper.getInstance(ThirdActivity.this).insertNewImage(Arrays.toString(readFile(currentPhotoPath)), passwordToDb());
+            } catch (NoSuchPaddingException e) {
+                e.printStackTrace();
+            } catch (InvalidKeyException e) {
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (IllegalBlockSizeException e) {
+                e.printStackTrace();
+            } catch (BadPaddingException e) {
+                e.printStackTrace();
+            } catch (InvalidAlgorithmParameterException e) {
+                e.printStackTrace();
+            }
+            try {
                 reloadImages();
+            } catch (NoSuchPaddingException e) {
+                e.printStackTrace();
+            } catch (InvalidAlgorithmParameterException e) {
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (IllegalBlockSizeException e) {
+                e.printStackTrace();
+            } catch (BadPaddingException e) {
+                e.printStackTrace();
+            } catch (InvalidKeyException e) {
+                e.printStackTrace();
+            }
         }
     }
     private void askCameraPermissions() {
@@ -222,9 +265,9 @@ public class ThirdActivity extends AppCompatActivity {
         }
         return bos != null ? bos.toByteArray() : null;
     }
-    private void reloadImages() {
+    private void reloadImages() throws NoSuchPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
 
-        ArrayList<String> imagesByteArray = new ArrayList<>(DBHelper.getInstance(this).getAllImages());
+        ArrayList<String> imagesByteArray = new ArrayList<>(DBHelper.getInstance(this).getAllImages(passwordToDb()));
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setItemViewCacheSize(20);
         recyclerView.setDrawingCacheEnabled(true);

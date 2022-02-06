@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
             // User launches the application for the first time. Create SecretKey, Create getPassword()
             // encrypt, save in SharedPreferences, <<<proceed with FingerPrint?>>>>
 
-            // Generating a secreyKey under certain alias
+            // Generating a secretKey under certain alias, provided with global parameters
             generateSecretKey();
 
             // Generating a password and putting encrypted version of it into  byte[]
@@ -155,10 +155,10 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("encByteArray", Arrays.toString(encryptedByteArray));
             editor.putString("SharedIV", Arrays.toString(iv));
             editor.apply();
-            System.out.println("Initialize Fingerprint");
+            System.out.println("Initialize Fingerprint and switch to ThirdActivity screen");
         } else {
             // The User launches the application NOT for the first time, proceed with fingerprint.
-            System.out.println("Initialize Fingerprint");
+            System.out.println("Initialize Fingerprint and switch to ThirdActivity screen");
         }
     }
 

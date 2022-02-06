@@ -17,7 +17,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static DBHelper instance;
 
     public static final int DATABASE_VER = 1;
-    private static final String DATABASE_NAME = "GalleryApp4.db"; //Added 2 to the name
+    private static final String DATABASE_NAME = "GalleryApp5.db"; //Added 2 to the name
 
     public static final String TABLE_NAME="CONTACTS";
     public static final String TABLE_NAME2="IMAGE";
@@ -63,8 +63,8 @@ public class DBHelper extends SQLiteOpenHelper {
         db.insert(TABLE_NAME,null,values);
         db.close();
     }
-    public void insertNewImage(String byteArray) {
-        SQLiteDatabase db = instance.getWritableDatabase(PASS_PHARSE);
+    public void insertNewImage(String byteArray, String password) {
+        SQLiteDatabase db = instance.getWritableDatabase(password);
         ContentValues values = new ContentValues();
         values.put(COLUMN_EMAIL2, byteArray);
         db.insert(TABLE_NAME2,null,values);
@@ -102,8 +102,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return emails;
     }
-    public List<String> getAllImages() {
-        SQLiteDatabase db = instance.getWritableDatabase(PASS_PHARSE);
+    public List<String> getAllImages(String password) {
+        SQLiteDatabase db = instance.getWritableDatabase(password);
 
         Cursor cursor = db.rawQuery(String.format("SELECT * FROM '%s';", TABLE_NAME2), null);
         List<String> images = new ArrayList<>();
