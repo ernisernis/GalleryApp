@@ -32,56 +32,56 @@ public class SecondActivity extends AppCompatActivity {
 //        textreceived = findViewById(R.id.textReceived);
 //        textreceived.setText(text);
 
-        SQLiteDatabase.loadLibs(this);
+//        SQLiteDatabase.loadLibs(this);
 
 
         //Init view
         lstEmails = findViewById(R.id.lstEmails);
-        lstEmails.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String item = (String) lstEmails.getItemAtPosition(position);
-                edtEmail.setText(item);
-                saveEmail = item;
-            }
-        });
+//        lstEmails.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                String item = (String) lstEmails.getItemAtPosition(position);
+//                edtEmail.setText(item);
+//                saveEmail = item;
+//            }
+//        });
 
         edtEmail = findViewById(R.id.edtEmail);
         btnAdd = findViewById(R.id.btnAdd);
         btnUpdate = findViewById(R.id.btnUpdate);
         btnDelete = findViewById(R.id.btnDelete);
 
-        btnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DBHelper.getInstance(SecondActivity.this).insertNewEmail(edtEmail.getText().toString());
-                reloadEmails();
+//        btnAdd.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                DBHelper.getInstance(SecondActivity.this).insertNewEmail(edtEmail.getText().toString());
+//                reloadEmails();
+//
+//            }
+//        });
 
-            }
-        });
 
+//        btnUpdate.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                DBHelper.getInstance(SecondActivity.this).updateEmail(saveEmail,edtEmail.getText().toString());
+//                reloadEmails();
+//            }
+//        });
 
-        btnUpdate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DBHelper.getInstance(SecondActivity.this).updateEmail(saveEmail,edtEmail.getText().toString());
-                reloadEmails();
-            }
-        });
-
-        btnDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DBHelper.getInstance(SecondActivity.this).deleteEmail(edtEmail.getText().toString());
-                reloadEmails();
-            }
-        });
-        reloadEmails();
+//        btnDelete.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                DBHelper.getInstance(SecondActivity.this).deleteEmail(edtEmail.getText().toString());
+//                reloadEmails();
+//            }
+//        });
+//        reloadEmails();
     }
 
-    private void reloadEmails() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
-                android.R.id.text1,DBHelper.getInstance(this).getAllEmail());
-        lstEmails.setAdapter(adapter);
-    }
+//    private void reloadEmails() {
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
+//                android.R.id.text1,DBHelper.getInstance(this).getAllEmail());
+//        lstEmails.setAdapter(adapter);
+//    }
 }
