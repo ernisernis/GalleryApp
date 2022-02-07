@@ -128,14 +128,6 @@ public class MainActivity extends AppCompatActivity {
         return cipher.doFinal(data.getBytes());
     }
 
-    private static String decrypt (byte[] encrypted) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-        GCMParameterSpec spec = new GCMParameterSpec(128, iv);
-        cipher.init(Cipher.DECRYPT_MODE,getSecretKey(),spec);
-        byte[] decoded = cipher.doFinal(encrypted);
-        return new String(decoded, StandardCharsets.UTF_8);
-    }
-
     private void init() throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
 
         SharedPreferences sharedPreferences = getSharedPreferences("encryptedInfo",MODE_PRIVATE);
