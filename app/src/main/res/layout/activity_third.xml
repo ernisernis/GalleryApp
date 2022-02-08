@@ -11,24 +11,31 @@
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Go Back"
         android:layout_marginLeft="200dp"
-        />
+        android:text="Go Back" />
+
 
     <Button
         android:id="@+id/btnTakePicture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:text="Take a picture!"
-        />
-
-
+        android:text="Take a picture!" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_below="@+id/button"
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/button" />
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="93dp"
+        android:layout_height="80dp"
+        android:layout_marginLeft="320dp"
+        android:layout_marginTop="680dp"
+        android:contentDescription="submit"
+        android:src="@drawable/ic_baseline_add_24" />
 
 </RelativeLayout>
