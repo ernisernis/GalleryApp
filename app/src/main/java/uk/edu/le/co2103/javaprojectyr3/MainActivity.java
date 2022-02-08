@@ -1,10 +1,16 @@
 package uk.edu.le.co2103.javaprojectyr3;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.biometric.BiometricPrompt;
+import androidx.core.content.ContextCompat;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.hardware.biometrics.BiometricManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
@@ -25,7 +31,9 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.Executor;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -43,9 +51,10 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String keyAlias = "key10";
     private static byte[] iv;
-    Button clickMe, button2;
+    Button clickMe, button2, lgn_btn;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
         clickMe = findViewById(R.id.button);
         button2 = findViewById(R.id.button2);
+        lgn_btn = findViewById(R.id.login_btn);
 
         clickMe.setOnClickListener(v -> {
 
@@ -70,6 +80,60 @@ public class MainActivity extends AppCompatActivity {
         button2.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this,ThirdActivity.class);
             startActivity(intent);
+        });
+
+        //Check if the user biometric authentication is available
+//        BiometricManager biometricManager = new BiometricManager();
+//        BiometricManager biometricManager = BiometricManager.from(this);
+//        BiometricManager biometricManager = null;
+//        switch (Objects.requireNonNull(biometricManager).canAuthenticate()) {
+//            case BiometricManager.BIOMETRIC_SUCCESS:
+//                Toast.makeText(MainActivity.this, "You can login. Success", Toast.LENGTH_SHORT).show();
+//                break;
+//
+//            case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
+//                Toast.makeText(MainActivity.this, "The device does not have device print scanner", Toast.LENGTH_SHORT).show();
+//                break;
+//            case BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE:
+//                Toast.makeText(MainActivity.this, "The Scanner is not currently available", Toast.LENGTH_SHORT).show();
+//                break;
+//            case BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED:
+//                Toast.makeText(MainActivity.this, "The device currently does not have any fingerprint enrolled", Toast.LENGTH_SHORT).show();
+//                break;
+//        }
+
+        Executor executor = ContextCompat.getMainExecutor(this);
+        BiometricPrompt biometricPrompt = new BiometricPrompt(MainActivity.this, executor, new BiometricPrompt.AuthenticationCallback() {
+            @Override
+            public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
+                super.onAuthenticationError(errorCode, errString);
+            }
+
+            @Override
+            public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
+                super.onAuthenticationSucceeded(result);
+                Toast.makeText(MainActivity.this, "Login success!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this,ThirdActivity.class);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onAuthenticationFailed() {
+                super.onAuthenticationFailed();
+            }
+        });
+
+        BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                .setTitle("Login")
+                .setDescription("Use your fingerprint! to login!")
+                .setNegativeButtonText("Cancel")
+                .build();
+
+        lgn_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                biometricPrompt.authenticate(promptInfo);
+            }
         });
 
     }
