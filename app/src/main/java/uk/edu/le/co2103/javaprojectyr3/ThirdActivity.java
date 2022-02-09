@@ -58,8 +58,11 @@ public class ThirdActivity extends AppCompatActivity {
     public static final int CAMERA_REQUEST_CODE = 131; //These numbers does not really matter, as long as they are different it's good.
     private static final String keyAlias = "key10";
 
+    // Fabs functionalities
     FloatingActionButton fabBtn_Main, fabBtn_Add, fabBtn_Gallery;
     TextView addPhotoText, takePhotoText;
+    Boolean isAllFabsVisible;
+
     String currentPhotoPath;
     Button goBack, tkPicture;
     RecyclerView recyclerView;
@@ -69,13 +72,22 @@ public class ThirdActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_third);
 
+        // For DB
         SQLiteDatabase.loadLibs(this);
 
+        // For all the FAB'S
         addPhotoText = findViewById(R.id.addPhotoText);
         takePhotoText = findViewById(R.id.takePhotoText);
         fabBtn_Main = findViewById(R.id.fab_main);
         fabBtn_Add = findViewById(R.id.fab_takePhoto);
         fabBtn_Gallery = findViewById(R.id.fab_addPhoto);
+        fabBtn_Add.setVisibility(View.GONE);
+        fabBtn_Gallery.setVisibility(View.GONE);
+        addPhotoText.setVisibility(View.GONE);
+        takePhotoText.setVisibility(View.GONE);
+        isAllFabsVisible = false;
+
+
         goBack = findViewById(R.id.button);
         tkPicture = findViewById(R.id.btnTakePicture);
 
@@ -233,7 +245,19 @@ public class ThirdActivity extends AppCompatActivity {
     }
 
     private void mainFabButton() {
-        Toast.makeText(ThirdActivity.this, "Fab button pressed!", Toast.LENGTH_SHORT).show();
+        if (!isAllFabsVisible) {
+            addPhotoText.setVisibility(View.VISIBLE);
+            takePhotoText.setVisibility(View.VISIBLE);
+            fabBtn_Gallery.show();
+            fabBtn_Add.show();
+            isAllFabsVisible = true;
+        } else {
+            fabBtn_Add.hide();
+            fabBtn_Gallery.hide();
+            addPhotoText.setVisibility(View.GONE);
+            takePhotoText.setVisibility(View.GONE);
+            isAllFabsVisible = false;
+        }
     }
 
 }
