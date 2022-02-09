@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,6 +21,8 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
@@ -55,6 +58,8 @@ public class ThirdActivity extends AppCompatActivity {
     public static final int CAMERA_REQUEST_CODE = 131; //These numbers does not really matter, as long as they are different it's good.
     private static final String keyAlias = "key10";
 
+    FloatingActionButton fabBtn_Main, fabBtn_Add, fabBtn_Gallery;
+    TextView addPhotoText, takePhotoText;
     String currentPhotoPath;
     Button goBack, tkPicture;
     RecyclerView recyclerView;
@@ -66,9 +71,20 @@ public class ThirdActivity extends AppCompatActivity {
 
         SQLiteDatabase.loadLibs(this);
 
-
+        addPhotoText = findViewById(R.id.addPhotoText);
+        takePhotoText = findViewById(R.id.takePhotoText);
+        fabBtn_Main = findViewById(R.id.fab_main);
+        fabBtn_Add = findViewById(R.id.fab_takePhoto);
+        fabBtn_Gallery = findViewById(R.id.fab_addPhoto);
         goBack = findViewById(R.id.button);
         tkPicture = findViewById(R.id.btnTakePicture);
+
+        fabBtn_Main.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mainFabButton();
+            }
+        });
 
         try {
             reloadImages();
@@ -214,6 +230,10 @@ public class ThirdActivity extends AppCompatActivity {
             array[i] = Byte.parseByte(split[i]);
         }
         return array;
+    }
+
+    private void mainFabButton() {
+        Toast.makeText(ThirdActivity.this, "Fab button pressed!", Toast.LENGTH_SHORT).show();
     }
 
 }

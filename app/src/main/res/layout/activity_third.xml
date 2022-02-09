@@ -28,14 +28,65 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/button" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="93dp"
-        android:layout_height="80dp"
-        android:layout_marginLeft="320dp"
-        android:layout_marginTop="680dp"
-        android:contentDescription="submit"
-        android:src="@drawable/ic_baseline_add_24" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/ic_baseline_add_24"
+            app:fabSize="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_takePhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:fabSize="normal"
+            app:layout_constraintBottom_toTopOf="@+id/fab_main"
+            app:layout_constraintEnd_toEndOf="@+id/fab_main"
+            app:layout_constraintStart_toStartOf="@+id/fab_main"
+            app:srcCompat="@drawable/ic_baseline_photo_camera_24" />
+
+        <TextView
+            android:id="@+id/takePhotoText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="Take Photo"
+            app:layout_constraintBottom_toBottomOf="@+id/fab_takePhoto"
+            app:layout_constraintEnd_toStartOf="@+id/fab_takePhoto"
+            app:layout_constraintTop_toTopOf="@+id/fab_takePhoto" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_addPhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:fabSize="normal"
+            app:layout_constraintBottom_toTopOf="@+id/fab_takePhoto"
+            app:layout_constraintEnd_toEndOf="@+id/fab_takePhoto"
+            app:layout_constraintStart_toStartOf="@+id/fab_takePhoto"
+            app:srcCompat="@drawable/ic_baseline_image_24" />
+
+        <TextView
+            android:id="@+id/addPhotoText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="Add Photo"
+            app:layout_constraintBottom_toBottomOf="@+id/fab_addPhoto"
+            app:layout_constraintEnd_toStartOf="@+id/fab_addPhoto"
+            app:layout_constraintTop_toTopOf="@+id/fab_addPhoto" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </RelativeLayout>
