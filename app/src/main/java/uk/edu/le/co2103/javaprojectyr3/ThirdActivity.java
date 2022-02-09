@@ -64,7 +64,7 @@ public class ThirdActivity extends AppCompatActivity {
     Boolean isAllFabsVisible;
 
     String currentPhotoPath;
-    Button goBack, tkPicture;
+    Button goBack;
     RecyclerView recyclerView;
 
     @Override
@@ -89,12 +89,27 @@ public class ThirdActivity extends AppCompatActivity {
 
 
         goBack = findViewById(R.id.button);
-        tkPicture = findViewById(R.id.btnTakePicture);
 
         fabBtn_Main.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mainFabButton();
+            }
+        });
+
+        fabBtn_Add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                askCameraPermissions();
+                hideFabsAndText();
+            }
+        });
+
+        fabBtn_Gallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(ThirdActivity.this, "Initialize gallery add procedure", Toast.LENGTH_SHORT).show();
+                hideFabsAndText();
             }
         });
 
@@ -108,8 +123,6 @@ public class ThirdActivity extends AppCompatActivity {
             Intent intent = new Intent(ThirdActivity.this,MainActivity.class);
             startActivity(intent);
         });
-
-        tkPicture.setOnClickListener(view -> askCameraPermissions());
 
 
     }
@@ -252,12 +265,16 @@ public class ThirdActivity extends AppCompatActivity {
             fabBtn_Add.show();
             isAllFabsVisible = true;
         } else {
-            fabBtn_Add.hide();
-            fabBtn_Gallery.hide();
-            addPhotoText.setVisibility(View.GONE);
-            takePhotoText.setVisibility(View.GONE);
-            isAllFabsVisible = false;
+            hideFabsAndText();
         }
+    }
+
+    private void hideFabsAndText() {
+        fabBtn_Add.hide();
+        fabBtn_Gallery.hide();
+        addPhotoText.setVisibility(View.GONE);
+        takePhotoText.setVisibility(View.GONE);
+        isAllFabsVisible = false;
     }
 
 }
