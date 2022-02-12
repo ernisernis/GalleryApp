@@ -139,7 +139,6 @@ public class ThirdActivity extends AppCompatActivity {
             }
 
             if (requestCode == GALLERY_SELECT_PICTURE) {
-                // data.getData() is URI.
                 System.out.println(data.getData());
                 try {
                     final Uri imageUri = data.getData();
@@ -155,9 +154,6 @@ public class ThirdActivity extends AppCompatActivity {
                     e.printStackTrace();
                     Toast.makeText(ThirdActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
                 }
-
-
-//                byte[] bytes = new ByteArrayOutputStream(data.getData());
             }
 
 
