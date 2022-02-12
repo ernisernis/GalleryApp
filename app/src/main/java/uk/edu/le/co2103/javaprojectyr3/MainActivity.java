@@ -49,7 +49,7 @@ import uk.edu.le.co2103.javaprojectyr3.DBHelper.DBHelper;
 public class MainActivity extends AppCompatActivity {
 
 
-    private static final String keyAlias = "key10";
+    private static final String keyAlias = "key11";
     private static byte[] iv;
     Button clickMe, button2, lgn_btn;
 
@@ -197,6 +197,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("encryptedInfo",MODE_PRIVATE);
         String checkEncArray = sharedPreferences.getString("encByteArray",null);
         if (checkEncArray == null) {
+            Toast.makeText(MainActivity.this, "App is run for the first time!", Toast.LENGTH_LONG).show();
             // User launches the application for the first time. Create SecretKey, Create getPassword()
             // encrypt, save in SharedPreferences, <<<proceed with FingerPrint?>>>>
 
@@ -204,7 +205,10 @@ public class MainActivity extends AppCompatActivity {
             generateSecretKey();
 
             // Generating a password and putting encrypted version of it into  byte[]
-            byte[] encryptedByteArray = encrypt(generatePassword());
+            String genPass = generatePassword();
+            System.out.println(genPass);
+            byte[] encryptedByteArray = encrypt(genPass);
+//            byte[] encryptedByteArray = encrypt(generatePassword());
 
             // Save encrypted Byte Array to the Saved Preferences, with IV
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -214,6 +218,7 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("Initialize Fingerprint and switch to ThirdActivity screen");
         } else {
             // The User launches the application NOT for the first time, proceed with fingerprint.
+            Toast.makeText(MainActivity.this, "App is run NOT for the first time", Toast.LENGTH_LONG).show();
             System.out.println("Initialize Fingerprint and switch to ThirdActivity screen");
         }
     }

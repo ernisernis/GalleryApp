@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -26,10 +28,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -56,7 +61,8 @@ public class ThirdActivity extends AppCompatActivity {
 
     public static final int CAMERA_PERM_CODE = 121; //These numbers does not really matter, as long as they are different it's good.
     public static final int CAMERA_REQUEST_CODE = 131; //These numbers does not really matter, as long as they are different it's good.
-    private static final String keyAlias = "key10";
+    public static final int GALLERY_SELECT_PICTURE = 141;
+    private static final String keyAlias = "key11";
 
     // Fabs functionalities
     FloatingActionButton fabBtn_Main, fabBtn_Add, fabBtn_Gallery;
@@ -90,27 +96,17 @@ public class ThirdActivity extends AppCompatActivity {
 
         goBack = findViewById(R.id.button);
 
-        fabBtn_Main.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mainFabButton();
-            }
+        fabBtn_Main.setOnClickListener(view -> mainFabButton());
+
+        fabBtn_Add.setOnClickListener(view -> {
+            askCameraPermissions();
+            hideFabsAndText();
         });
 
-        fabBtn_Add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                askCameraPermissions();
-                hideFabsAndText();
-            }
-        });
-
-        fabBtn_Gallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(ThirdActivity.this, "Initialize gallery add procedure", Toast.LENGTH_SHORT).show();
-                hideFabsAndText();
-            }
+        fabBtn_Gallery.setOnClickListener(view -> {
+            Toast.makeText(ThirdActivity.this, "Initialize gallery add procedure", Toast.LENGTH_SHORT).show();
+            galleryImage();
+            hideFabsAndText();
         });
 
         try {
@@ -131,13 +127,40 @@ public class ThirdActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CAMERA_REQUEST_CODE) {
-            try {
-                DBHelper.getInstance(ThirdActivity.this).insertNewImage(Arrays.toString(readFile(currentPhotoPath)), passwordToDb());
-                reloadImages();
-            } catch (NoSuchPaddingException | InvalidKeyException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
-                e.printStackTrace();
+        if (resultCode == RESULT_OK) {
+
+            if(requestCode == CAMERA_REQUEST_CODE) {
+                try {
+                    DBHelper.getInstance(ThirdActivity.this).insertNewImage(Arrays.toString(readFile(currentPhotoPath)), passwordToDb());
+                    reloadImages();
+                } catch (NoSuchPaddingException | InvalidKeyException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
+                    e.printStackTrace();
+                }
             }
+
+            if (requestCode == GALLERY_SELECT_PICTURE) {
+                // data.getData() is URI.
+                System.out.println(data.getData());
+                try {
+                    final Uri imageUri = data.getData();
+                    final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                    final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    selectedImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    byte[] byteArray = stream.toByteArray();
+                    selectedImage.recycle();
+                    DBHelper.getInstance(ThirdActivity.this).insertNewImage(Arrays.toString(byteArray),passwordToDb());
+                    reloadImages();
+                } catch (FileNotFoundException | NoSuchPaddingException | InvalidKeyException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
+                    e.printStackTrace();
+                    Toast.makeText(ThirdActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                }
+
+
+//                byte[] bytes = new ByteArrayOutputStream(data.getData());
+            }
+
+
         }
     }
 
@@ -275,6 +298,13 @@ public class ThirdActivity extends AppCompatActivity {
         addPhotoText.setVisibility(View.GONE);
         takePhotoText.setVisibility(View.GONE);
         isAllFabsVisible = false;
+    }
+
+    private void galleryImage() {
+        Intent i = new Intent();
+        i.setType("image/*");
+        i.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(i, "Select Picture"), GALLERY_SELECT_PICTURE);
     }
 
 }
