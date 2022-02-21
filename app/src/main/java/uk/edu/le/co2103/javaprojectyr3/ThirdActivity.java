@@ -230,18 +230,28 @@ public class ThirdActivity extends AppCompatActivity {
     private void reloadImages() throws NoSuchPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
 
         ArrayList<String> imagesByteArray = new ArrayList<>(DBHelper.getInstance(this).getAllImages(passwordToDb()));
-        System.out.println(imagesByteArray);
-//        ArrayList<Bitmap> bitmapArray = new ArrayList<>();
-//        for(int i = 0; i < imagesByteArray.size(); i++) {
-//
-//        }
+        ArrayList<Bitmap> bitmapArray = new ArrayList<>();
+        for(int i = 0; i < imagesByteArray.size(); i++) {
+            // Single image byte string
+            String sIBS = imagesByteArray.get(i);
+            sIBS = sIBS.substring(0, sIBS.length() -1);
+            sIBS = sIBS.substring(1);
+            String [] bytesString = sIBS.split(", ");
+            byte [] bytes = new byte[bytesString.length];
+            for(int j = 0 ; j < bytes.length ; ++j) {
+                bytes[j] = Byte.parseByte(bytesString[j]);
+            }
+            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            bitmapArray.add(bmp);
+        }
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setItemViewCacheSize(20);
         recyclerView.setDrawingCacheEnabled(true);
         recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         recyclerView.setHasFixedSize(true);
-        RVAdapter myAdapter = new RVAdapter(this,imagesByteArray);
+//        RVAdapter myAdapter = new RVAdapter(this,imagesByteArray);
+        RVAdapter myAdapter = new RVAdapter(this,bitmapArray);
         recyclerView.setAdapter(myAdapter);
         GridLayoutManager layoutManager = new GridLayoutManager(this,2);
         recyclerView.setLayoutManager(layoutManager);
