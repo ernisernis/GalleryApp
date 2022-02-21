@@ -71,7 +71,7 @@ public class ThirdActivity extends AppCompatActivity {
     Boolean isAllFabsVisible;
 
     String currentPhotoPath;
-    Button goBack;
+//    Button goBack;
     private RecyclerView recyclerView;
     ProgressDialog p;
 
@@ -100,7 +100,7 @@ public class ThirdActivity extends AppCompatActivity {
 //        recyclerView.setLayoutManager(layoutManager);
 
 
-        goBack = findViewById(R.id.button);
+//        goBack = findViewById(R.id.button);
 
         fabBtn_Main.setOnClickListener(view -> mainFabButton());
 
@@ -121,10 +121,10 @@ public class ThirdActivity extends AppCompatActivity {
 //            e.printStackTrace();
 //        }
 
-        goBack.setOnClickListener(view -> {
-            Intent intent = new Intent(ThirdActivity.this,MainActivity.class);
-            startActivity(intent);
-        });
+//        goBack.setOnClickListener(view -> {
+//            Intent intent = new Intent(ThirdActivity.this,MainActivity.class);
+//            startActivity(intent);
+//        });
 
         MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
         myAsyncTasks.execute();

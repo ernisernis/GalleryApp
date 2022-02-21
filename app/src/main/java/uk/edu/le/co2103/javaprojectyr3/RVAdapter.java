@@ -62,7 +62,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
 //        }
 //        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
-        holder.myImage.setImageBitmap(Bitmap.createScaledBitmap(bmp,400,400,false));
+        holder.myImage.setImageBitmap(Bitmap.createScaledBitmap(bmp,510,510,false));
     }
 
     @Override
