@@ -83,6 +83,7 @@ public class ThirdActivity extends AppCompatActivity {
         // For DB
         SQLiteDatabase.loadLibs(this);
 
+
         // For all the FAB'S
         addPhotoText = findViewById(R.id.addPhotoText);
         takePhotoText = findViewById(R.id.takePhotoText);
@@ -97,6 +98,7 @@ public class ThirdActivity extends AppCompatActivity {
 
 //        GridLayoutManager layoutManager=new GridLayoutManager(this,2);
 //        recyclerView.setLayoutManager(layoutManager);
+
 
         goBack = findViewById(R.id.button);
 
@@ -144,7 +146,7 @@ public class ThirdActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             p = new ProgressDialog(ThirdActivity.this);
-            p.setMessage("Please wait. Decrypting...");
+            p.setMessage("Please wait...");
             p.setIndeterminate(false);
             p.setCancelable(false);
             p.show();
@@ -209,6 +211,55 @@ public class ThirdActivity extends AppCompatActivity {
         }
     }
 
+
+    public class MyAsyncTasksGallery extends AsyncTask<String,String,String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            p = new ProgressDialog(ThirdActivity.this);
+            p.setMessage("Please wait...!!!!!");
+            p.setIndeterminate(false);
+            p.setCancelable(false);
+            p.show();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+            //final Uri imageUri = strings[0];
+            try {
+                String stringUri = strings[0];
+                Uri imageUri = Uri.parse(stringUri);
+                InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                selectedImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+                selectedImage.recycle();
+                DBHelper.getInstance(ThirdActivity.this).insertNewImage(Arrays.toString(byteArray),passwordToDb());
+                return "proceed";
+            } catch (FileNotFoundException | NoSuchPaddingException | InvalidKeyException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
+                e.printStackTrace();
+            }
+            return "failed";
+        }
+
+        @Override
+        protected void onPostExecute(String string) {
+            if (string.equals("proceed"))  {
+                Toast.makeText(ThirdActivity.this, "Uploading image suceeded!!!", Toast.LENGTH_LONG).show();
+                p.hide();
+                MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
+                myAsyncTasks.execute();
+            } else {
+                p.hide();
+                Toast.makeText(ThirdActivity.this, "Uploading image failed!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -217,28 +268,22 @@ public class ThirdActivity extends AppCompatActivity {
             if(requestCode == CAMERA_REQUEST_CODE) {
                 try {
                     DBHelper.getInstance(ThirdActivity.this).insertNewImage(Arrays.toString(readFile(currentPhotoPath)), passwordToDb());
-                    reloadImages();
+//                    reloadImages();
+                    MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
+                    myAsyncTasks.execute();
                 } catch (NoSuchPaddingException | InvalidKeyException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
                     e.printStackTrace();
                 }
             }
 
             if (requestCode == GALLERY_SELECT_PICTURE) {
-                System.out.println(data.getData());
-                try {
                     final Uri imageUri = data.getData();
-                    final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                    final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    selectedImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    byte[] byteArray = stream.toByteArray();
-                    selectedImage.recycle();
-                    DBHelper.getInstance(ThirdActivity.this).insertNewImage(Arrays.toString(byteArray),passwordToDb());
-                    reloadImages();
-                } catch (FileNotFoundException | NoSuchPaddingException | InvalidKeyException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
-                    e.printStackTrace();
-                    Toast.makeText(ThirdActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
-                }
+                    String imageStrUri = imageUri.toString();
+                    MyAsyncTasksGallery myAsyncTasksGallery = new MyAsyncTasksGallery();
+                    myAsyncTasksGallery.execute(imageStrUri);
+                    ////////-----------
+//                    MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
+//                    myAsyncTasks.execute();
             }
 
 
