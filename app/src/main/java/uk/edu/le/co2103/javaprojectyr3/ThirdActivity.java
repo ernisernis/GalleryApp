@@ -1,12 +1,14 @@
 package uk.edu.le.co2103.javaprojectyr3;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -22,14 +24,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -73,6 +73,7 @@ public class ThirdActivity extends AppCompatActivity {
     String currentPhotoPath;
     Button goBack;
     private RecyclerView recyclerView;
+    ProgressDialog p;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,20 +113,101 @@ public class ThirdActivity extends AppCompatActivity {
             hideFabsAndText();
         });
 
-        try {
-            reloadImages();
-        } catch (NoSuchPaddingException | InvalidAlgorithmParameterException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            reloadImages();
+//        } catch (NoSuchPaddingException | InvalidAlgorithmParameterException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException e) {
+//            e.printStackTrace();
+//        }
 
         goBack.setOnClickListener(view -> {
             Intent intent = new Intent(ThirdActivity.this,MainActivity.class);
             startActivity(intent);
         });
 
+        MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
+        myAsyncTasks.execute();
+
+//        try {
+//            ArrayList<String> imagesByteArray = new ArrayList<>(DBHelper.getInstance(ThirdActivity.this).getAllImages(passwordToDb()));
+//            if (imagesByteArray.size() != 0) {
+//                System.out.println(imagesByteArray.size());
+//            }
+//        } catch (NoSuchPaddingException | InvalidKeyException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
+//            e.printStackTrace();
+//        }
 
     }
 
+    public class MyAsyncTasks extends AsyncTask<String,String,String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            p = new ProgressDialog(ThirdActivity.this);
+            p.setMessage("Please wait. Decrypting...");
+            p.setIndeterminate(false);
+            p.setCancelable(false);
+            p.show();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            try {
+//                reloadImages();
+                ArrayList<String> imagesByteArray = new ArrayList<>(DBHelper.getInstance(ThirdActivity.this).getAllImages(passwordToDb()));
+                if (imagesByteArray.size() == 0) {
+                    return "empty";
+                }
+                ArrayList<Bitmap> bitmapArray = new ArrayList<>();
+                for(int i = 0; i < imagesByteArray.size(); i++) {
+                    // Single image byte string
+                    String sIBS = imagesByteArray.get(i);
+                    sIBS = sIBS.substring(0, sIBS.length() -1);
+                    sIBS = sIBS.substring(1);
+                    String [] bytesString = sIBS.split(", ");
+                    byte [] bytes = new byte[bytesString.length];
+                    for(int j = 0 ; j < bytes.length ; ++j) {
+                        bytes[j] = Byte.parseByte(bytesString[j]);
+                    }
+                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    bitmapArray.add(bmp);
+                }
+
+                recyclerView = findViewById(R.id.recyclerView);
+                recyclerView.setItemViewCacheSize(20);
+                recyclerView.setDrawingCacheEnabled(true);
+                recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+                recyclerView.setHasFixedSize(true);
+                RVAdapter myAdapter = new RVAdapter(ThirdActivity.this,bitmapArray);
+                GridLayoutManager layoutManager = new GridLayoutManager(ThirdActivity.this,2);
+//        RVAdapter myAdapter = new RVAdapter(this,imagesByteArray);
+                runOnUiThread(() -> {
+
+                    // Stuff that updates the UI
+                    recyclerView.setAdapter(myAdapter);
+                    recyclerView.setLayoutManager(layoutManager);
+                });
+//                RVAdapter myAdapter = new RVAdapter(ThirdActivity.this,bitmapArray);
+//                recyclerView.setAdapter(myAdapter);
+//                GridLayoutManager layoutManager = new GridLayoutManager(ThirdActivity.this,2);
+//                recyclerView.setLayoutManager(layoutManager);
+                return "accepted";
+            } catch (NoSuchPaddingException | InvalidAlgorithmParameterException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException e) {
+                e.printStackTrace();
+            }
+            return "notAccepted";
+        }
+
+        @Override
+        protected void onPostExecute(String string) {
+//            super.onPostExecute("accepted");
+            System.out.println(string);
+            if (string.equals("accepted") || string.equals("empty")) {
+                p.hide();
+            }
+//            p.hide();
+        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
