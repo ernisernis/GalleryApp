@@ -6,9 +6,11 @@ import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -54,7 +56,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
         }
         Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
-        holder.myImage.setImageBitmap(Bitmap.createScaledBitmap(bmp,800,800,false));
+        holder.myImage.setImageBitmap(Bitmap.createScaledBitmap(bmp,400,400,false));
     }
 
     @Override

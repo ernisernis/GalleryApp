@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -71,7 +72,7 @@ public class ThirdActivity extends AppCompatActivity {
 
     String currentPhotoPath;
     Button goBack;
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +94,8 @@ public class ThirdActivity extends AppCompatActivity {
         takePhotoText.setVisibility(View.GONE);
         isAllFabsVisible = false;
 
+//        GridLayoutManager layoutManager=new GridLayoutManager(this,2);
+//        recyclerView.setLayoutManager(layoutManager);
 
         goBack = findViewById(R.id.button);
 
@@ -227,6 +230,12 @@ public class ThirdActivity extends AppCompatActivity {
     private void reloadImages() throws NoSuchPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
 
         ArrayList<String> imagesByteArray = new ArrayList<>(DBHelper.getInstance(this).getAllImages(passwordToDb()));
+        System.out.println(imagesByteArray);
+//        ArrayList<Bitmap> bitmapArray = new ArrayList<>();
+//        for(int i = 0; i < imagesByteArray.size(); i++) {
+//
+//        }
+
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setItemViewCacheSize(20);
         recyclerView.setDrawingCacheEnabled(true);
@@ -234,7 +243,8 @@ public class ThirdActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         RVAdapter myAdapter = new RVAdapter(this,imagesByteArray);
         recyclerView.setAdapter(myAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        GridLayoutManager layoutManager = new GridLayoutManager(this,2);
+        recyclerView.setLayoutManager(layoutManager);
     }
 
     private static SecretKey getSecretKey() {
