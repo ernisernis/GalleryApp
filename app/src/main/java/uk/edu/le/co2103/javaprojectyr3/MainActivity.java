@@ -51,7 +51,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String keyAlias = "key11";
     private static byte[] iv;
-    Button clickMe, button2, lgn_btn;
+    Button lgn_btn;
+    Button button2;
 
 
     @RequiresApi(api = Build.VERSION_CODES.R)
@@ -66,16 +67,16 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        clickMe = findViewById(R.id.button);
+//        clickMe = findViewById(R.id.button);
         button2 = findViewById(R.id.button2);
         lgn_btn = findViewById(R.id.login_btn);
 
-        clickMe.setOnClickListener(v -> {
-
-            Intent intent = new Intent(MainActivity.this,SecondActivity.class);
-//                intent.putExtra("Text", textHere);
-            startActivity(intent);
-        });
+//        clickMe.setOnClickListener(v -> {
+//
+//            Intent intent = new Intent(MainActivity.this,SecondActivity.class);
+////                intent.putExtra("Text", textHere);
+//            startActivity(intent);
+//        });
 
         button2.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this,ThirdActivity.class);
