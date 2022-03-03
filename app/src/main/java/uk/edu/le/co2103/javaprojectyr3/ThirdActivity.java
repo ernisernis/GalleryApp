@@ -64,6 +64,7 @@ public class ThirdActivity extends AppCompatActivity {
     public static final int CAMERA_REQUEST_CODE = 131; //These numbers does not really matter, as long as they are different it's good.
     public static final int GALLERY_SELECT_PICTURE = 141;
     private static final String keyAlias = "key11";
+    private String finalPw;
 
     // Fabs functionalities
     FloatingActionButton fabBtn_Main, fabBtn_Add, fabBtn_Gallery;
@@ -156,7 +157,8 @@ public class ThirdActivity extends AppCompatActivity {
         protected String doInBackground(String... strings) {
             try {
 //                reloadImages();
-                ArrayList<String> imagesByteArray = new ArrayList<>(DBHelper.getInstance(ThirdActivity.this).getAllImages(passwordToDb()));
+                finalPw = passwordToDb();
+                ArrayList<String> imagesByteArray = new ArrayList<>(DBHelper.getInstance(ThirdActivity.this).getAllImages(finalPw));
                 if (imagesByteArray.size() == 0) {
                     return "empty";
                 }
@@ -237,9 +239,9 @@ public class ThirdActivity extends AppCompatActivity {
                 selectedImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
                 byte[] byteArray = stream.toByteArray();
                 selectedImage.recycle();
-                DBHelper.getInstance(ThirdActivity.this).insertNewImage(Arrays.toString(byteArray),passwordToDb());
+                DBHelper.getInstance(ThirdActivity.this).insertNewImage(Arrays.toString(byteArray),finalPw);
                 return "proceed";
-            } catch (FileNotFoundException | NoSuchPaddingException | InvalidKeyException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
+            } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
             return "failed";
@@ -266,14 +268,10 @@ public class ThirdActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
 
             if(requestCode == CAMERA_REQUEST_CODE) {
-                try {
-                    DBHelper.getInstance(ThirdActivity.this).insertNewImage(Arrays.toString(readFile(currentPhotoPath)), passwordToDb());
+                    DBHelper.getInstance(ThirdActivity.this).insertNewImage(Arrays.toString(readFile(currentPhotoPath)), finalPw);
 //                    reloadImages();
                     MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
                     myAsyncTasks.execute();
-                } catch (NoSuchPaddingException | InvalidKeyException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
-                    e.printStackTrace();
-                }
             }
 
             if (requestCode == GALLERY_SELECT_PICTURE) {
@@ -356,7 +354,7 @@ public class ThirdActivity extends AppCompatActivity {
 
     private void reloadImages() throws NoSuchPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
 
-        ArrayList<String> imagesByteArray = new ArrayList<>(DBHelper.getInstance(this).getAllImages(passwordToDb()));
+        ArrayList<String> imagesByteArray = new ArrayList<>(DBHelper.getInstance(this).getAllImages(finalPw));
         ArrayList<Bitmap> bitmapArray = new ArrayList<>();
         for(int i = 0; i < imagesByteArray.size(); i++) {
             // Single image byte string
