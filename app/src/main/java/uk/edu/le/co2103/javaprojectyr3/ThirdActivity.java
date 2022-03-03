@@ -72,7 +72,7 @@ public class ThirdActivity extends AppCompatActivity {
     Boolean isAllFabsVisible;
 
     String currentPhotoPath;
-//    Button goBack;
+    //    Button goBack;
     private RecyclerView recyclerView;
     ProgressDialog p;
 
@@ -97,12 +97,6 @@ public class ThirdActivity extends AppCompatActivity {
         takePhotoText.setVisibility(View.GONE);
         isAllFabsVisible = false;
 
-//        GridLayoutManager layoutManager=new GridLayoutManager(this,2);
-//        recyclerView.setLayoutManager(layoutManager);
-
-
-//        goBack = findViewById(R.id.button);
-
         fabBtn_Main.setOnClickListener(view -> mainFabButton());
 
         fabBtn_Add.setOnClickListener(view -> {
@@ -116,28 +110,8 @@ public class ThirdActivity extends AppCompatActivity {
             hideFabsAndText();
         });
 
-//        try {
-//            reloadImages();
-//        } catch (NoSuchPaddingException | InvalidAlgorithmParameterException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException e) {
-//            e.printStackTrace();
-//        }
-
-//        goBack.setOnClickListener(view -> {
-//            Intent intent = new Intent(ThirdActivity.this,MainActivity.class);
-//            startActivity(intent);
-//        });
-
         MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
         myAsyncTasks.execute();
-
-//        try {
-//            ArrayList<String> imagesByteArray = new ArrayList<>(DBHelper.getInstance(ThirdActivity.this).getAllImages(passwordToDb()));
-//            if (imagesByteArray.size() != 0) {
-//                System.out.println(imagesByteArray.size());
-//            }
-//        } catch (NoSuchPaddingException | InvalidKeyException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
-//            e.printStackTrace();
-//        }
 
     }
 
@@ -156,7 +130,6 @@ public class ThirdActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... strings) {
             try {
-//                reloadImages();
                 finalPw = passwordToDb();
                 ArrayList<String> imagesByteArray = new ArrayList<>(DBHelper.getInstance(ThirdActivity.this).getAllImages(finalPw));
                 if (imagesByteArray.size() == 0) {
@@ -184,17 +157,12 @@ public class ThirdActivity extends AppCompatActivity {
                 recyclerView.setHasFixedSize(true);
                 RVAdapter myAdapter = new RVAdapter(ThirdActivity.this,bitmapArray);
                 GridLayoutManager layoutManager = new GridLayoutManager(ThirdActivity.this,2);
-//        RVAdapter myAdapter = new RVAdapter(this,imagesByteArray);
                 runOnUiThread(() -> {
 
                     // Stuff that updates the UI
                     recyclerView.setAdapter(myAdapter);
                     recyclerView.setLayoutManager(layoutManager);
                 });
-//                RVAdapter myAdapter = new RVAdapter(ThirdActivity.this,bitmapArray);
-//                recyclerView.setAdapter(myAdapter);
-//                GridLayoutManager layoutManager = new GridLayoutManager(ThirdActivity.this,2);
-//                recyclerView.setLayoutManager(layoutManager);
                 return "accepted";
             } catch (NoSuchPaddingException | InvalidAlgorithmParameterException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException e) {
                 e.printStackTrace();
@@ -204,12 +172,10 @@ public class ThirdActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String string) {
-//            super.onPostExecute("accepted");
             System.out.println(string);
             if (string.equals("accepted") || string.equals("empty")) {
                 p.hide();
             }
-//            p.hide();
         }
     }
 
@@ -229,7 +195,6 @@ public class ThirdActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... strings) {
 
-            //final Uri imageUri = strings[0];
             try {
                 String stringUri = strings[0];
                 Uri imageUri = Uri.parse(stringUri);
@@ -269,7 +234,6 @@ public class ThirdActivity extends AppCompatActivity {
 
             if(requestCode == CAMERA_REQUEST_CODE) {
                     DBHelper.getInstance(ThirdActivity.this).insertNewImage(Arrays.toString(readFile(currentPhotoPath)), finalPw);
-//                    reloadImages();
                     MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
                     myAsyncTasks.execute();
             }
@@ -279,9 +243,6 @@ public class ThirdActivity extends AppCompatActivity {
                     String imageStrUri = imageUri.toString();
                     MyAsyncTasksGallery myAsyncTasksGallery = new MyAsyncTasksGallery();
                     myAsyncTasksGallery.execute(imageStrUri);
-                    ////////-----------
-//                    MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
-//                    myAsyncTasks.execute();
             }
 
 
@@ -375,7 +336,6 @@ public class ThirdActivity extends AppCompatActivity {
         recyclerView.setDrawingCacheEnabled(true);
         recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         recyclerView.setHasFixedSize(true);
-//        RVAdapter myAdapter = new RVAdapter(this,imagesByteArray);
         RVAdapter myAdapter = new RVAdapter(this,bitmapArray);
         recyclerView.setAdapter(myAdapter);
         GridLayoutManager layoutManager = new GridLayoutManager(this,2);
