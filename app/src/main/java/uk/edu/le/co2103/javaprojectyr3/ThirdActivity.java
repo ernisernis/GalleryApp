@@ -131,31 +131,40 @@ public class ThirdActivity extends AppCompatActivity {
         protected String doInBackground(String... strings) {
             try {
                 finalPw = passwordToDb();
-                ArrayList<String> imagesByteArray = new ArrayList<>(DBHelper.getInstance(ThirdActivity.this).getAllImages(finalPw));
-                if (imagesByteArray.size() == 0) {
-                    return "empty";
+                System.out.println(finalPw);
+//                ArrayList<String> imagesByteArray = new ArrayList<>(DBHelper.getInstance(ThirdActivity.this).getAllImages(finalPw));
+                ArrayList<byte[]> imagesBytesDB = new ArrayList<>(DBHelper.getInstance(ThirdActivity.this).getAllImagesByteArray(finalPw));
+                ArrayList<Bitmap> bitmapArrayDB = new ArrayList<>();
+                for (int i = 0; i < imagesBytesDB.size(); i++) {
+                    byte[] placeHolder = imagesBytesDB.get(i);
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(placeHolder,0,placeHolder.length,options);
+                    bitmapArrayDB.add(bitmap);
                 }
-                ArrayList<Bitmap> bitmapArray = new ArrayList<>();
-                for(int i = 0; i < imagesByteArray.size(); i++) {
-                    // Single image byte string
-                    String sIBS = imagesByteArray.get(i);
-                    sIBS = sIBS.substring(0, sIBS.length() -1);
-                    sIBS = sIBS.substring(1);
-                    String [] bytesString = sIBS.split(", ");
-                    byte [] bytes = new byte[bytesString.length];
-                    for(int j = 0 ; j < bytes.length ; ++j) {
-                        bytes[j] = Byte.parseByte(bytesString[j]);
-                    }
-                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    bitmapArray.add(bmp);
-                }
+//                if (imagesByteArray.size() == 0) {
+//                    return "empty";
+//                }
+//                ArrayList<Bitmap> bitmapArray = new ArrayList<>();
+//                for(int i = 0; i < imagesByteArray.size(); i++) {
+//                    // Single image byte string
+//                    String sIBS = imagesByteArray.get(i);
+//                    sIBS = sIBS.substring(0, sIBS.length() -1);
+//                    sIBS = sIBS.substring(1);
+//                    String [] bytesString = sIBS.split(", ");
+//                    byte [] bytes = new byte[bytesString.length];
+//                    for(int j = 0 ; j < bytes.length ; ++j) {
+//                        bytes[j] = Byte.parseByte(bytesString[j]);
+//                    }
+//                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//                    bitmapArray.add(bmp);
+//                }
 
                 recyclerView = findViewById(R.id.recyclerView);
                 recyclerView.setItemViewCacheSize(20);
                 recyclerView.setDrawingCacheEnabled(true);
                 recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
                 recyclerView.setHasFixedSize(true);
-                RVAdapter myAdapter = new RVAdapter(ThirdActivity.this,bitmapArray);
+                RVAdapter myAdapter = new RVAdapter(ThirdActivity.this,bitmapArrayDB);
                 GridLayoutManager layoutManager = new GridLayoutManager(ThirdActivity.this,2);
                 runOnUiThread(() -> {
 
@@ -198,15 +207,19 @@ public class ThirdActivity extends AppCompatActivity {
             try {
                 String stringUri = strings[0];
                 Uri imageUri = Uri.parse(stringUri);
-                InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                selectedImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                byte[] byteArray = stream.toByteArray();
-                selectedImage.recycle();
-                DBHelper.getInstance(ThirdActivity.this).insertNewImage(Arrays.toString(byteArray),finalPw);
+                InputStream iStream = getContentResolver().openInputStream(imageUri);
+                byte[] inputData = getBytes(iStream);
+                DBHelper.getInstance(ThirdActivity.this).insertNewImageBlob(inputData,finalPw);
+
+//                InputStream imageStream = getContentResolver().openInputStream(imageUri);
+//                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+//                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//                selectedImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+//                byte[] byteArray = stream.toByteArray();
+//                selectedImage.recycle();
+//                DBHelper.getInstance(ThirdActivity.this).insertNewImage(Arrays.toString(byteArray),finalPw);
                 return "proceed";
-            } catch (FileNotFoundException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             return "failed";
@@ -233,13 +246,34 @@ public class ThirdActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
 
             if(requestCode == CAMERA_REQUEST_CODE) {
-                    DBHelper.getInstance(ThirdActivity.this).insertNewImage(Arrays.toString(readFile(currentPhotoPath)), finalPw);
-                    MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
-                    myAsyncTasks.execute();
+                Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
+                byte[] byteArray = stream.toByteArray();
+                bitmap.recycle();
+                DBHelper.getInstance(ThirdActivity.this).insertNewImageBlob(byteArray,finalPw);
+                MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
+                myAsyncTasks.execute();
+//                final Uri imageUri = data.getData();
+//                String imageStrUri = imageUri.toString();
+//                MyAsyncTasksGallery myAsyncTasksGallery = new MyAsyncTasksGallery();
+//                myAsyncTasksGallery.execute(imageStrUri);
+//                    DBHelper.getInstance(ThirdActivity.this).insertNewImage(Arrays.toString(readFile(currentPhotoPath)), finalPw);
+//                    MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
+//                    myAsyncTasks.execute();
             }
 
             if (requestCode == GALLERY_SELECT_PICTURE) {
-                    final Uri imageUri = data.getData();
+//                try {
+//                    InputStream iStream = getContentResolver().openInputStream(data.getData());
+//                    byte[] inputData = getBytes(iStream);
+//                    DBHelper.getInstance(ThirdActivity.this).insertNewImageBlob(inputData,finalPw);
+//
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+
+                final Uri imageUri = data.getData();
                     String imageStrUri = imageUri.toString();
                     MyAsyncTasksGallery myAsyncTasksGallery = new MyAsyncTasksGallery();
                     myAsyncTasksGallery.execute(imageStrUri);
@@ -247,6 +281,18 @@ public class ThirdActivity extends AppCompatActivity {
 
 
         }
+    }
+
+    public byte[] getBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int len = 0;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
     }
 
     private void askCameraPermissions() {
