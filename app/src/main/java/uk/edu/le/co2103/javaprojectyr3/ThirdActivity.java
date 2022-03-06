@@ -132,7 +132,6 @@ public class ThirdActivity extends AppCompatActivity {
             try {
                 finalPw = passwordToDb();
                 System.out.println(finalPw);
-//                ArrayList<String> imagesByteArray = new ArrayList<>(DBHelper.getInstance(ThirdActivity.this).getAllImages(finalPw));
                 ArrayList<byte[]> imagesBytesDB = new ArrayList<>(DBHelper.getInstance(ThirdActivity.this).getAllImagesByteArray(finalPw));
                 ArrayList<Bitmap> bitmapArrayDB = new ArrayList<>();
                 for (int i = 0; i < imagesBytesDB.size(); i++) {
@@ -141,23 +140,6 @@ public class ThirdActivity extends AppCompatActivity {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(placeHolder,0,placeHolder.length,options);
                     bitmapArrayDB.add(bitmap);
                 }
-//                if (imagesByteArray.size() == 0) {
-//                    return "empty";
-//                }
-//                ArrayList<Bitmap> bitmapArray = new ArrayList<>();
-//                for(int i = 0; i < imagesByteArray.size(); i++) {
-//                    // Single image byte string
-//                    String sIBS = imagesByteArray.get(i);
-//                    sIBS = sIBS.substring(0, sIBS.length() -1);
-//                    sIBS = sIBS.substring(1);
-//                    String [] bytesString = sIBS.split(", ");
-//                    byte [] bytes = new byte[bytesString.length];
-//                    for(int j = 0 ; j < bytes.length ; ++j) {
-//                        bytes[j] = Byte.parseByte(bytesString[j]);
-//                    }
-//                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-//                    bitmapArray.add(bmp);
-//                }
 
                 recyclerView = findViewById(R.id.recyclerView);
                 recyclerView.setItemViewCacheSize(20);
@@ -210,14 +192,6 @@ public class ThirdActivity extends AppCompatActivity {
                 InputStream iStream = getContentResolver().openInputStream(imageUri);
                 byte[] inputData = getBytes(iStream);
                 DBHelper.getInstance(ThirdActivity.this).insertNewImageBlob(inputData,finalPw);
-
-//                InputStream imageStream = getContentResolver().openInputStream(imageUri);
-//                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-//                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//                selectedImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
-//                byte[] byteArray = stream.toByteArray();
-//                selectedImage.recycle();
-//                DBHelper.getInstance(ThirdActivity.this).insertNewImage(Arrays.toString(byteArray),finalPw);
                 return "proceed";
             } catch (IOException e) {
                 e.printStackTrace();
@@ -254,24 +228,9 @@ public class ThirdActivity extends AppCompatActivity {
                 DBHelper.getInstance(ThirdActivity.this).insertNewImageBlob(byteArray,finalPw);
                 MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
                 myAsyncTasks.execute();
-//                final Uri imageUri = data.getData();
-//                String imageStrUri = imageUri.toString();
-//                MyAsyncTasksGallery myAsyncTasksGallery = new MyAsyncTasksGallery();
-//                myAsyncTasksGallery.execute(imageStrUri);
-//                    DBHelper.getInstance(ThirdActivity.this).insertNewImage(Arrays.toString(readFile(currentPhotoPath)), finalPw);
-//                    MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
-//                    myAsyncTasks.execute();
             }
 
             if (requestCode == GALLERY_SELECT_PICTURE) {
-//                try {
-//                    InputStream iStream = getContentResolver().openInputStream(data.getData());
-//                    byte[] inputData = getBytes(iStream);
-//                    DBHelper.getInstance(ThirdActivity.this).insertNewImageBlob(inputData,finalPw);
-//
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
 
                 final Uri imageUri = data.getData();
                     String imageStrUri = imageUri.toString();
@@ -341,51 +300,6 @@ public class ThirdActivity extends AppCompatActivity {
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
             }
-    }
-
-    private byte[] readFile(String file) {
-        ByteArrayOutputStream bos = null;
-        try {
-            File f = new File(file);
-            FileInputStream fis = new FileInputStream(f);
-            byte[] buffer = new byte[1024];
-            bos = new ByteArrayOutputStream();
-            for (int len; (len = fis.read(buffer)) != -1;) {
-                bos.write(buffer, 0, len);
-            }
-        } catch (IOException e) {
-            Toast.makeText(ThirdActivity.this, "Error reading a photo! : " + e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-        return bos != null ? bos.toByteArray() : null;
-    }
-
-    private void reloadImages() throws NoSuchPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
-
-        ArrayList<String> imagesByteArray = new ArrayList<>(DBHelper.getInstance(this).getAllImages(finalPw));
-        ArrayList<Bitmap> bitmapArray = new ArrayList<>();
-        for(int i = 0; i < imagesByteArray.size(); i++) {
-            // Single image byte string
-            String sIBS = imagesByteArray.get(i);
-            sIBS = sIBS.substring(0, sIBS.length() -1);
-            sIBS = sIBS.substring(1);
-            String [] bytesString = sIBS.split(", ");
-            byte [] bytes = new byte[bytesString.length];
-            for(int j = 0 ; j < bytes.length ; ++j) {
-                bytes[j] = Byte.parseByte(bytesString[j]);
-            }
-            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-            bitmapArray.add(bmp);
-        }
-
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setItemViewCacheSize(20);
-        recyclerView.setDrawingCacheEnabled(true);
-        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        recyclerView.setHasFixedSize(true);
-        RVAdapter myAdapter = new RVAdapter(this,bitmapArray);
-        recyclerView.setAdapter(myAdapter);
-        GridLayoutManager layoutManager = new GridLayoutManager(this,2);
-        recyclerView.setLayoutManager(layoutManager);
     }
 
     private static SecretKey getSecretKey() {
