@@ -31,6 +31,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             myImage = itemView.findViewById(R.id.myImageView);
+            myImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
     }
 
@@ -47,7 +48,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
     public void onBindViewHolder(@NonNull RVAdapter.MyViewHolder holder, int position) {
 
         Bitmap bmp = data1.get(position);
-        holder.myImage.setImageBitmap(Bitmap.createScaledBitmap(bmp,200,200,false));
+        holder.myImage.setImageBitmap(Bitmap.createScaledBitmap(bmp,235,230,false));
     }
 
     @Override
