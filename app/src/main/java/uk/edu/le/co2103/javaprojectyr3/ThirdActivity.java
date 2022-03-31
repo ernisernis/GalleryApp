@@ -147,7 +147,7 @@ public class ThirdActivity extends AppCompatActivity {
                 recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
                 recyclerView.setHasFixedSize(true);
                 RVAdapter myAdapter = new RVAdapter(ThirdActivity.this,bitmapArrayDB);
-                GridLayoutManager layoutManager = new GridLayoutManager(ThirdActivity.this,2);
+                GridLayoutManager layoutManager = new GridLayoutManager(ThirdActivity.this,4);
                 runOnUiThread(() -> {
 
                     // Stuff that updates the UI

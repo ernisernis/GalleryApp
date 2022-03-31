@@ -47,22 +47,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
     public void onBindViewHolder(@NonNull RVAdapter.MyViewHolder holder, int position) {
 
         Bitmap bmp = data1.get(position);
-//        holder.myImage.setImageBitmap();
-//        String current = data1.get(position).replace("[","");
-//        current = current.replace("]","");
-//        String current = data1.get(position);
-//        current = current.substring(0, current.length() -1);
-//        current = current.substring(1);
-//        String [] bytesString = current.split(", ");
-//        String current = data1.get(position);
-//        String[] bytesString = current.split(", ");
-//        byte[] bytes = new byte[bytesString.length];
-//        for(int i = 0 ; i < bytes.length ; ++i) {
-//            bytes[i] = Byte.parseByte(bytesString[i]);
-//        }
-//        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-
-        holder.myImage.setImageBitmap(Bitmap.createScaledBitmap(bmp,510,510,false));
+        holder.myImage.setImageBitmap(Bitmap.createScaledBitmap(bmp,200,200,false));
     }
 
     @Override
