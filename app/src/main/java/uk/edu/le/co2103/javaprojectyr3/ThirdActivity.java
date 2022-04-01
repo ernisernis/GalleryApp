@@ -66,6 +66,9 @@ public class ThirdActivity extends AppCompatActivity {
     private static final String keyAlias = "key11";
     private String finalPw;
 
+    RecyclerTouchListener recyclerview;
+
+
     // Fabs functionalities
     FloatingActionButton fabBtn_Main, fabBtn_Add, fabBtn_Gallery;
     TextView addPhotoText, takePhotoText;
@@ -110,6 +113,7 @@ public class ThirdActivity extends AppCompatActivity {
             hideFabsAndText();
         });
 
+
         MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
         myAsyncTasks.execute();
 
@@ -153,7 +157,24 @@ public class ThirdActivity extends AppCompatActivity {
                     // Stuff that updates the UI
                     recyclerView.setAdapter(myAdapter);
                     recyclerView.setLayoutManager(layoutManager);
+                    recyclerView.addOnItemTouchListener(new RecyclerTouchListener(ThirdActivity.this, recyclerView, new RecyclerTouchListener.ClickListener() {
+                        @Override
+                        public void onClick(View view, int position) {
+
+                            // Write your code here
+                            Toast.makeText(ThirdActivity.this, "Short message clicked " + position, Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(ThirdActivity.this,ImageActivity.class);
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onLongClick(View view, int position) {
+                            Toast.makeText(ThirdActivity.this, "Long message clicked", Toast.LENGTH_SHORT).show();
+
+                        }
+                    }));
                 });
+
                 return "accepted";
             } catch (NoSuchPaddingException | InvalidAlgorithmParameterException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException e) {
                 e.printStackTrace();

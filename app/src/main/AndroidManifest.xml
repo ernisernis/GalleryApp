@@ -20,6 +20,8 @@
         <activity
             android:name=".ThirdActivity"
             android:exported="false" />
+        <activity android:name=".ImageActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
