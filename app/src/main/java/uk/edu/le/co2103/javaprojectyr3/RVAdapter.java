@@ -48,7 +48,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
     public void onBindViewHolder(@NonNull RVAdapter.MyViewHolder holder, int position) {
 
         Bitmap bmp = data1.get(position);
-        holder.myImage.setImageBitmap(Bitmap.createScaledBitmap(bmp,235,230,false));
+        holder.myImage.setImageBitmap(Bitmap.createScaledBitmap(bmp,200,250,false));
     }
 
     @Override
