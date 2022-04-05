@@ -162,21 +162,11 @@ public class ThirdActivity extends AppCompatActivity {
                     recyclerView.setAdapter(myAdapter);
                     recyclerView.setLayoutManager(layoutManager);
                     recyclerView.addOnItemTouchListener(new RecyclerTouchListener(ThirdActivity.this, recyclerView, new RecyclerTouchListener.ClickListener() {
+                        // Invokes onClick when a single photo gets clicked.
                         @Override
                         public void onClick(View view, int position) {
-
-                            // Write your code here
                             Toast.makeText(ThirdActivity.this, "Short message clicked " + position, Toast.LENGTH_SHORT).show();
-                            ImageView imageView;
-                            imageView = findViewById(R.id.singleImage);
-                            Bitmap bmp = loadBitmapFromView(view);
-                            imageView.setImageBitmap(Bitmap.createScaledBitmap(bmp,300,300,false));
-                            imageView.setVisibility(View.VISIBLE);
-                            recyclerView.setVisibility(View.GONE);
-//                            myImage.setImageBitmap(Bitmap.createScaledBitmap(bmp,200,250,false));
-//                            Intent intent = new Intent(ThirdActivity.this,ImageActivity.class);
-//                            startActivity(intent);
-
+                            singleImageClick(view,position);
                         }
 
                         @Override
@@ -204,6 +194,7 @@ public class ThirdActivity extends AppCompatActivity {
             }
         }
     }
+
 
 
     public class MyAsyncTasksGallery extends AsyncTask<String,String,String> {
@@ -411,6 +402,22 @@ public class ThirdActivity extends AppCompatActivity {
 
         v.draw(c);
         return b;
+    }
+
+    private void singleImageClick(View view, int position) {
+        ImageView imageView;
+        imageView = findViewById(R.id.singleImage);
+        Bitmap bmp = loadBitmapFromView(view);
+        imageView.setImageBitmap(Bitmap.createScaledBitmap(bmp,500,500,false));
+        imageView.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                imageView.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
 }
