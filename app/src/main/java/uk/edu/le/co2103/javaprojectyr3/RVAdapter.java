@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
 
@@ -22,8 +23,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
     private Context context;
 
     public RVAdapter(Context ct, ArrayList<Bitmap> images) {
-        context = ct;
-        data1 = images;
+        this.context = ct;
+        this.data1 = images;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

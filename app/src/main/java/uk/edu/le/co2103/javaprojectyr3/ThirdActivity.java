@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,6 +15,8 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
+import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +51,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Objects;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -163,8 +167,16 @@ public class ThirdActivity extends AppCompatActivity {
 
                             // Write your code here
                             Toast.makeText(ThirdActivity.this, "Short message clicked " + position, Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(ThirdActivity.this,ImageActivity.class);
-                            startActivity(intent);
+                            ImageView imageView;
+                            imageView = findViewById(R.id.singleImage);
+                            Bitmap bmp = loadBitmapFromView(view);
+                            imageView.setImageBitmap(Bitmap.createScaledBitmap(bmp,300,300,false));
+                            imageView.setVisibility(View.VISIBLE);
+                            recyclerView.setVisibility(View.GONE);
+//                            myImage.setImageBitmap(Bitmap.createScaledBitmap(bmp,200,250,false));
+//                            Intent intent = new Intent(ThirdActivity.this,ImageActivity.class);
+//                            startActivity(intent);
+
                         }
 
                         @Override
@@ -174,6 +186,8 @@ public class ThirdActivity extends AppCompatActivity {
                         }
                     }));
                 });
+
+
 
                 return "accepted";
             } catch (NoSuchPaddingException | InvalidAlgorithmParameterException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException e) {
@@ -387,6 +401,16 @@ public class ThirdActivity extends AppCompatActivity {
         i.setType("image/*");
         i.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(i, "Select Picture"), GALLERY_SELECT_PICTURE);
+    }
+
+    public static Bitmap loadBitmapFromView(View v) {
+//        Bitmap b = Bitmap.createBitmap( v.getLayoutParams().width, v.getLayoutParams().height, Bitmap.Config.ARGB_8888);
+        Bitmap b = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+        v.layout(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+
+        v.draw(c);
+        return b;
     }
 
 }
