@@ -83,6 +83,9 @@ public class ThirdActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     ProgressDialog p;
 
+    ArrayList<byte[]> imagesBytesDB;
+    ArrayList<Bitmap> bitmapArrayDB;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,8 +143,8 @@ public class ThirdActivity extends AppCompatActivity {
             try {
                 finalPw = passwordToDb();
                 System.out.println(finalPw);
-                ArrayList<byte[]> imagesBytesDB = new ArrayList<>(DBHelper.getInstance(ThirdActivity.this).getAllImagesByteArray(finalPw));
-                ArrayList<Bitmap> bitmapArrayDB = new ArrayList<>();
+                imagesBytesDB = new ArrayList<>(DBHelper.getInstance(ThirdActivity.this).getAllImagesByteArray(finalPw));
+                bitmapArrayDB = new ArrayList<>();
                 for (int i = 0; i < imagesBytesDB.size(); i++) {
                     byte[] placeHolder = imagesBytesDB.get(i);
                     BitmapFactory.Options options = new BitmapFactory.Options();
@@ -165,14 +168,12 @@ public class ThirdActivity extends AppCompatActivity {
                         // Invokes onClick when a single photo gets clicked.
                         @Override
                         public void onClick(View view, int position) {
-                            Toast.makeText(ThirdActivity.this, "Short message clicked " + position, Toast.LENGTH_SHORT).show();
                             singleImageClick(view,position);
                         }
 
                         @Override
                         public void onLongClick(View view, int position) {
-                            Toast.makeText(ThirdActivity.this, "Long message clicked", Toast.LENGTH_SHORT).show();
-
+                            singleImageLongClick(view,position);
                         }
                     }));
                 });
@@ -407,12 +408,12 @@ public class ThirdActivity extends AppCompatActivity {
     private void singleImageClick(View view, int position) {
         ImageView imageView;
         imageView = findViewById(R.id.singleImage);
-        Bitmap bmp = loadBitmapFromView(view);
-//        imageView.setImageBitmap(Bitmap.createScaledBitmap(bmp,600,600,false));
-        imageView.setImageBitmap(bmp);
+        imageView.setImageBitmap(bitmapArrayDB.get(position));
+
         imageView.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.GONE);
         fabBtn_Main.setVisibility(View.GONE);
+
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -423,4 +424,8 @@ public class ThirdActivity extends AppCompatActivity {
         });
     }
 
+    private void singleImageLongClick(View view, int position) {
+
+        Toast.makeText(ThirdActivity.this, "Long message clicked", Toast.LENGTH_SHORT).show();
+    }
 }
