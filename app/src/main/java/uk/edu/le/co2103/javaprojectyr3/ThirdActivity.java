@@ -411,11 +411,13 @@ public class ThirdActivity extends AppCompatActivity {
         imageView.setImageBitmap(Bitmap.createScaledBitmap(bmp,500,500,false));
         imageView.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.GONE);
+        fabBtn_Main.setVisibility(View.GONE);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 imageView.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
+                fabBtn_Main.setVisibility(View.VISIBLE);
             }
         });
     }
