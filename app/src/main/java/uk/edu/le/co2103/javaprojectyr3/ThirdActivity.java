@@ -408,7 +408,8 @@ public class ThirdActivity extends AppCompatActivity {
         ImageView imageView;
         imageView = findViewById(R.id.singleImage);
         Bitmap bmp = loadBitmapFromView(view);
-        imageView.setImageBitmap(Bitmap.createScaledBitmap(bmp,500,500,false));
+//        imageView.setImageBitmap(Bitmap.createScaledBitmap(bmp,600,600,false));
+        imageView.setImageBitmap(bmp);
         imageView.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.GONE);
         fabBtn_Main.setVisibility(View.GONE);
