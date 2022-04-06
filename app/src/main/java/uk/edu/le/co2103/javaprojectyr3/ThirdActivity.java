@@ -115,7 +115,6 @@ public class ThirdActivity extends AppCompatActivity {
         });
 
         fabBtn_Gallery.setOnClickListener(view -> {
-            Toast.makeText(ThirdActivity.this, "Initialize gallery add procedure", Toast.LENGTH_SHORT).show();
             galleryImage();
             hideFabsAndText();
         });
@@ -395,16 +394,6 @@ public class ThirdActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(i, "Select Picture"), GALLERY_SELECT_PICTURE);
     }
 
-    public static Bitmap loadBitmapFromView(View v) {
-//        Bitmap b = Bitmap.createBitmap( v.getLayoutParams().width, v.getLayoutParams().height, Bitmap.Config.ARGB_8888);
-        Bitmap b = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(b);
-        v.layout(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
-
-        v.draw(c);
-        return b;
-    }
-
     private void singleImageClick(View view, int position) {
         ImageView imageView;
         imageView = findViewById(R.id.singleImage);
@@ -414,18 +403,17 @@ public class ThirdActivity extends AppCompatActivity {
         recyclerView.setVisibility(View.GONE);
         fabBtn_Main.setVisibility(View.GONE);
 
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                imageView.setVisibility(View.GONE);
-                recyclerView.setVisibility(View.VISIBLE);
-                fabBtn_Main.setVisibility(View.VISIBLE);
-            }
+        imageView.setOnClickListener(view1 -> {
+            imageView.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            fabBtn_Main.setVisibility(View.VISIBLE);
         });
     }
 
     private void singleImageLongClick(View view, int position) {
 
         Toast.makeText(ThirdActivity.this, "Long message clicked", Toast.LENGTH_SHORT).show();
+//        imagesBytesDB = new ArrayList<>(DBHelper.getInstance(ThirdActivity.this).getAllImagesByteArray(finalPw));
+        DBHelper.getInstance(ThirdActivity.this).deleteImage(finalPw, imagesBytesDB.get(position));
     }
 }
