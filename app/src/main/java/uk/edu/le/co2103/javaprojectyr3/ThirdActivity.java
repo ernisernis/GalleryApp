@@ -71,6 +71,8 @@ public class ThirdActivity extends AppCompatActivity {
     private String finalPw;
 
     RecyclerTouchListener recyclerview;
+    ImageView imageView;
+    RVAdapter myAdapter;
 
 
     // Fabs functionalities
@@ -156,7 +158,7 @@ public class ThirdActivity extends AppCompatActivity {
                 recyclerView.setDrawingCacheEnabled(true);
                 recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
                 recyclerView.setHasFixedSize(true);
-                RVAdapter myAdapter = new RVAdapter(ThirdActivity.this,bitmapArrayDB);
+                myAdapter = new RVAdapter(ThirdActivity.this,bitmapArrayDB);
                 GridLayoutManager layoutManager = new GridLayoutManager(ThirdActivity.this,4);
                 runOnUiThread(() -> {
 
@@ -195,6 +197,89 @@ public class ThirdActivity extends AppCompatActivity {
         }
     }
 
+
+    public class MyAsyncTaskReload extends AsyncTask<String,String,String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            p = new ProgressDialog(ThirdActivity.this);
+            p.setMessage("Please wait...");
+            p.setIndeterminate(false);
+            p.setCancelable(false);
+            p.show();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            try {
+                int position = Integer.parseInt(strings[0]);
+                finalPw = passwordToDb();
+                DBHelper.getInstance(ThirdActivity.this).deleteImage(finalPw, imagesBytesDB.get(position));
+                bitmapArrayDB.remove(position);
+                myAdapter.notifyItemRemoved(position);
+//                runOnUiThread(() -> {
+//
+//                    RVAdapter myAdapter = new RVAdapter(ThirdActivity.this,bitmapArrayDB);
+//                    bitmapArrayDB.remove(position);
+//                    recyclerView.setAdapter(myAdapter);
+////                    myAdapter.notifyItemRemoved(position);
+////                    myAdapter.notifyItemRangeChanged(position,bitmapArrayDB.size());
+//
+//                });
+//                System.out.println(finalPw);
+//                imagesBytesDB = new ArrayList<>(DBHelper.getInstance(ThirdActivity.this).getAllImagesByteArray(finalPw));
+//                bitmapArrayDB = new ArrayList<>();
+//                for (int i = 0; i < imagesBytesDB.size(); i++) {
+//                    byte[] placeHolder = imagesBytesDB.get(i);
+//                    BitmapFactory.Options options = new BitmapFactory.Options();
+//                    Bitmap bitmap = BitmapFactory.decodeByteArray(placeHolder,0,placeHolder.length,options);
+//                    bitmapArrayDB.add(bitmap);
+//                }
+//
+//                recyclerView = findViewById(R.id.recyclerView);
+//                recyclerView.setItemViewCacheSize(20);
+//                recyclerView.setDrawingCacheEnabled(true);
+//                recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+//                recyclerView.setHasFixedSize(true);
+//                RVAdapter myAdapter = new RVAdapter(ThirdActivity.this,bitmapArrayDB);
+//                GridLayoutManager layoutManager = new GridLayoutManager(ThirdActivity.this,4);
+//                runOnUiThread(() -> {
+//
+//                    // Stuff that updates the UI
+//                    recyclerView.setAdapter(myAdapter);
+//                    recyclerView.setLayoutManager(layoutManager);
+//                    recyclerView.addOnItemTouchListener(new RecyclerTouchListener(ThirdActivity.this, recyclerView, new RecyclerTouchListener.ClickListener() {
+//                        // Invokes onClick when a single photo gets clicked.
+//                        @Override
+//                        public void onClick(View view, int position) {
+//                            singleImageClick(view,position);
+//                        }
+//
+//                        @Override
+//                        public void onLongClick(View view, int position) {
+//                            singleImageLongClick(view,position);
+//                        }
+//                    }));
+//                });
+
+
+
+                return "accepted";
+            } catch (NoSuchPaddingException | InvalidAlgorithmParameterException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException e) {
+                e.printStackTrace();
+            }
+            return "notAccepted";
+        }
+
+        @Override
+        protected void onPostExecute(String string) {
+            System.out.println(string);
+            if (string.equals("accepted") || string.equals("empty")) {
+                p.hide();
+            }
+        }
+    }
 
 
     public class MyAsyncTasksGallery extends AsyncTask<String,String,String> {
@@ -395,7 +480,6 @@ public class ThirdActivity extends AppCompatActivity {
     }
 
     private void singleImageClick(View view, int position) {
-        ImageView imageView;
         imageView = findViewById(R.id.singleImage);
         imageView.setImageBitmap(bitmapArrayDB.get(position));
 
@@ -414,6 +498,11 @@ public class ThirdActivity extends AppCompatActivity {
 
         Toast.makeText(ThirdActivity.this, "Long message clicked", Toast.LENGTH_SHORT).show();
 //        imagesBytesDB = new ArrayList<>(DBHelper.getInstance(ThirdActivity.this).getAllImagesByteArray(finalPw));
-        DBHelper.getInstance(ThirdActivity.this).deleteImage(finalPw, imagesBytesDB.get(position));
+//        DBHelper.getInstance(ThirdActivity.this).deleteImage(finalPw, imagesBytesDB.get(position));
+//        recyclerView.removeItemDecorationAt(position);
+//        bitmapArrayDB.remove(position);
+//        notifyItemRemoved(position);
+        MyAsyncTaskReload myAsyncTaskReload = new MyAsyncTaskReload();
+        myAsyncTaskReload.execute(Integer.toString(position));
     }
 }
