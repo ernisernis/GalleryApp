@@ -1,7 +1,9 @@
 package uk.edu.le.co2103.javaprojectyr3;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -453,16 +455,28 @@ public class ThirdActivity extends AppCompatActivity {
     private void singleImageLongClick(View view, int position) {
 
         Toast.makeText(ThirdActivity.this, "Long message clicked", Toast.LENGTH_SHORT).show();
-//        imagesBytesDB = new ArrayList<>(DBHelper.getInstance(ThirdActivity.this).getAllImagesByteArray(finalPw));
-//        DBHelper.getInstance(ThirdActivity.this).deleteImage(finalPw, imagesBytesDB.get(position));
-//        recyclerView.removeItemDecorationAt(position);
-//        bitmapArrayDB.remove(position);
-//        notifyItemRemoved(position);
-//        DBHelper.getInstance(ThirdActivity.this).deleteImage(finalPw, imagesBytesDB.get(position));
-//        bitmapArrayDB.remove(position);
-//        myAdapter.notifyItemRemoved(position);
-//        myAdapter.notifyItemRangeChanged(position,bitmapArrayDB.size());
-        MyAsyncTaskReload myAsyncTaskReload = new MyAsyncTaskReload();
-        myAsyncTaskReload.execute(Integer.toString(position));
+        AlertDialog.Builder builder = new AlertDialog.Builder(ThirdActivity.this);
+        builder.setCancelable(true);
+        builder.setTitle("Delete this image");
+        builder.setMessage("Are you sure ?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                MyAsyncTaskReload myAsyncTaskReload = new MyAsyncTaskReload();
+                myAsyncTaskReload.execute(Integer.toString(position));
+                Toast.makeText(ThirdActivity.this, "Yes clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                Toast.makeText(ThirdActivity.this, "No clicked", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
     }
 }

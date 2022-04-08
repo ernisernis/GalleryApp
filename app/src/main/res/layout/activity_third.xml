@@ -51,26 +51,26 @@
             app:layout_constraintStart_toStartOf="@+id/fab_main"
             app:srcCompat="@drawable/ic_baseline_photo_camera_24" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_deletePhoto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:layout_marginBottom="16dp"
-            app:fabSize="normal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/fab_main"
-            app:srcCompat="@drawable/ic_baseline_delete_outline_24" />
+<!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--            android:id="@+id/fab_deletePhoto"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginEnd="24dp"-->
+<!--            android:layout_marginBottom="16dp"-->
+<!--            app:fabSize="normal"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/fab_main"-->
+<!--            app:srcCompat="@drawable/ic_baseline_delete_outline_24" />-->
 
-        <TextView
-            android:id="@+id/deletePhotoText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="Delete Photo"
-            app:layout_constraintBottom_toTopOf="@+id/fab_deletePhoto"
-            app:layout_constraintEnd_toEndOf="@+id/fab_deletePhoto"
-            app:layout_constraintStart_toStartOf="@+id/fab_deletePhoto" />
+<!--        <TextView-->
+<!--            android:id="@+id/deletePhotoText"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginBottom="16dp"-->
+<!--            android:text="Delete Photo"-->
+<!--            app:layout_constraintBottom_toTopOf="@+id/fab_deletePhoto"-->
+<!--            app:layout_constraintEnd_toEndOf="@+id/fab_deletePhoto"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/fab_deletePhoto" />-->
 
         <TextView
             android:id="@+id/takePhotoText"
