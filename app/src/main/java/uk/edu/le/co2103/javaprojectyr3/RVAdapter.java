@@ -51,12 +51,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
 
         Bitmap bmp = data1.get(position);
         holder.myImage.setImageBitmap(Bitmap.createScaledBitmap(bmp,200,250,false));
-//        holder.myImage.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Toast.makeText(context, "Item clicked!" + holder.getAdapterPosition(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
     }
 
     @Override
