@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 //        });
 
         button2.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this,ThirdActivity.class);
+            Intent intent = new Intent(MainActivity.this,FolderActivity.class);
             startActivity(intent);
         });
 

@@ -19,7 +19,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static DBHelper instance;
 
     public static final int DATABASE_VER = 1;
-    private static final String DATABASE_NAME = "GalleryApp2.db";
+    private static final String DATABASE_NAME = "GalleryApp3.db";
 
 //    public static final String TABLE_NAME="CONTACTS";
 //    public static final String TABLE_NAME2="IMAGE";

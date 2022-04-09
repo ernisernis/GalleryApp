@@ -21,6 +21,12 @@
             android:name=".ThirdActivity"
             android:exported="false" />
         <activity
+            android:name=".FolderActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddFolderActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
