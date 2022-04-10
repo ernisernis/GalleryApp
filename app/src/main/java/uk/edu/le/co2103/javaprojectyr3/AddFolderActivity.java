@@ -1,5 +1,6 @@
 package uk.edu.le.co2103.javaprojectyr3;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -64,6 +65,8 @@ public class AddFolderActivity extends AppCompatActivity {
 //                imagesBytesDB = new ArrayList<>(DBHelper.getInstance(ThirdActivity.this).getAllImagesByteArray(finalPw));
                 Toast.makeText(AddFolderActivity.this, inputFolderName.getText().toString(), Toast.LENGTH_SHORT).show();
                 DBHelper.getInstance(AddFolderActivity.this).createFolder(dbPassword, inputFolderName.getText().toString());
+                Intent intent = new Intent(AddFolderActivity.this,FolderActivity.class);
+                startActivity(intent);
             }
         });
 

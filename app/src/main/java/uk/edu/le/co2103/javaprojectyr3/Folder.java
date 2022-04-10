@@ -11,6 +11,10 @@ public class Folder {
    ArrayList<Bitmap> bitmapArrayList;
    int count;
 
+   public Folder(String title) {
+       this.title = title;
+   }
+
     public String getTitle() {
         return title;
     }
