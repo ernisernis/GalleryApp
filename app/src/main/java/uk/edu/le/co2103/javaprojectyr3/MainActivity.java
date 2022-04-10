@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private static byte[] iv;
     Button lgn_btn;
     Button button2;
+    Button button3;
 
 
     @RequiresApi(api = Build.VERSION_CODES.R)
@@ -69,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
 //        clickMe = findViewById(R.id.button);
         button2 = findViewById(R.id.button2);
+        button3 = findViewById(R.id.button3);
         lgn_btn = findViewById(R.id.login_btn);
 
 //        clickMe.setOnClickListener(v -> {
@@ -83,6 +85,10 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        button3.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this,ThirdActivity.class);
+            startActivity(intent);
+        });
         //Check if the user biometric authentication is available
 //        BiometricManager biometricManager = new BiometricManager();
 //        BiometricManager biometricManager = BiometricManager.from(this);
@@ -216,11 +222,9 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("encByteArray", Arrays.toString(encryptedByteArray));
             editor.putString("SharedIV", Arrays.toString(iv));
             editor.apply();
-            System.out.println("Initialize Fingerprint and switch to ThirdActivity screen");
         } else {
             // The User launches the application NOT for the first time, proceed with fingerprint.
             Toast.makeText(MainActivity.this, "App is run NOT for the first time", Toast.LENGTH_LONG).show();
-            System.out.println("Initialize Fingerprint and switch to ThirdActivity screen");
         }
     }
 

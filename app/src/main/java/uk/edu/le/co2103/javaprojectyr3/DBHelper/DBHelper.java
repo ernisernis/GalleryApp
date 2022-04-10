@@ -58,16 +58,16 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 //        sqLiteDatabase.execSQL(SQL_CREATE_TABLE_QUERY);
 //        sqLiteDatabase.execSQL(SQL_CREATE_TABLE_QUERY2);
-        sqLiteDatabase.execSQL(SQL_CREATE_TABLE_QUERY3);
-        sqLiteDatabase.execSQL(SQL_CREATE_TABLE_QUERY4);
+//        sqLiteDatabase.execSQL(SQL_CREATE_TABLE_QUERY3);
+//        sqLiteDatabase.execSQL(SQL_CREATE_TABLE_QUERY4);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 //        sqLiteDatabase.execSQL(SQL_DELETE_TABLE_QUERY);
 //        sqLiteDatabase.execSQL(SQL_DELETE_TABLE_QUERY2);
-        sqLiteDatabase.execSQL(SQL_DELETE_TABLE_QUERY3);
-        sqLiteDatabase.execSQL(SQL_DELETE_TABLE_QUERY4);
+//        sqLiteDatabase.execSQL(SQL_DELETE_TABLE_QUERY3);
+//        sqLiteDatabase.execSQL(SQL_DELETE_TABLE_QUERY4);
         onCreate(sqLiteDatabase);
     }
 
@@ -178,5 +178,16 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
 
         return imagesByteArray;
+    }
+
+    public void createFolder(String password, String folderName) {
+//        private static final String SQL_CREATE_TABLE_QUERY4="CREATE TABLE "+TABLE_NAME4+" ("+COLUMN_EMAIL4+" INTEGER PRIMARY KEY, "+COLUMN_EMAIL5+" BLOB  )";
+//        SQLiteDatabase.loadLibs();
+        SQLiteDatabase db = instance.getWritableDatabase(password);
+        String CREATE_NEW_FOLDER = "CREATE TABLE " + folderName + " (_id INTEGER PRIMARY KEY, ImageBlob BLOB )";
+        db.execSQL(CREATE_NEW_FOLDER);
+        db.close();
+        System.out.println(password);
+        System.out.println(folderName);
     }
 }

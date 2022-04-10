@@ -72,7 +72,6 @@ public class ThirdActivity extends AppCompatActivity {
     private static final String keyAlias = "key11";
     private String finalPw;
 
-    RecyclerTouchListener recyclerview;
     ImageView imageView;
     RVAdapter myAdapter;
 
