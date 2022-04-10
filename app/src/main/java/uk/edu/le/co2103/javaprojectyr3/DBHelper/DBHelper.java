@@ -180,6 +180,22 @@ public class DBHelper extends SQLiteOpenHelper {
         return imagesByteArray;
     }
 
+    public List<String> getAllFoldersStringArray(String password) {
+        SQLiteDatabase db = instance.getWritableDatabase(password);
+        Cursor cursor = db.rawQuery("SELECT name from sqlite_master where type='table'",null);
+        List<String> foldersStringArray = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                @SuppressLint("Range") String folderString = cursor.getString(cursor.getColumnIndex("name"));
+                foldersStringArray.add(folderString);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        return foldersStringArray;
+    }
+
     public void createFolder(String password, String folderName) {
 //        private static final String SQL_CREATE_TABLE_QUERY4="CREATE TABLE "+TABLE_NAME4+" ("+COLUMN_EMAIL4+" INTEGER PRIMARY KEY, "+COLUMN_EMAIL5+" BLOB  )";
 //        SQLiteDatabase.loadLibs();

@@ -35,6 +35,8 @@ public class AddFolderActivity extends AppCompatActivity {
 
     EditText inputFolderName;
     Button createButton;
+    Button testFolders;
+    String dbPassword;
     private static final String keyAlias = "key11";
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +45,17 @@ public class AddFolderActivity extends AppCompatActivity {
 
         // For DB
         SQLiteDatabase.loadLibs(this);
+
+        // Password for DB
+        try {
+            dbPassword = passwordToDb();
+        } catch (NoSuchPaddingException | InvalidKeyException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
+        }
+
         inputFolderName = findViewById(R.id.inputName);
         createButton = findViewById(R.id.createFolderButton);
+        testFolders = findViewById(R.id.testFolders);
 
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,13 +63,21 @@ public class AddFolderActivity extends AppCompatActivity {
                 // Get name of the folder and create DB table with PK as a folder name. Create 3 columns.
 //                imagesBytesDB = new ArrayList<>(DBHelper.getInstance(ThirdActivity.this).getAllImagesByteArray(finalPw));
                 Toast.makeText(AddFolderActivity.this, inputFolderName.getText().toString(), Toast.LENGTH_SHORT).show();
-                try {
-                    DBHelper.getInstance(AddFolderActivity.this).createFolder(passwordToDb(), inputFolderName.getText().toString());
-                } catch (NoSuchPaddingException | InvalidKeyException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
-                    e.printStackTrace();
+                DBHelper.getInstance(AddFolderActivity.this).createFolder(dbPassword, inputFolderName.getText().toString());
+            }
+        });
+
+        testFolders.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ArrayList<String> folderString = new ArrayList<>(DBHelper.getInstance(AddFolderActivity.this).getAllFoldersStringArray(dbPassword));
+                for (int i = 0; i < folderString.size(); i++) {
+                    System.out.println(folderString.get(i));
                 }
             }
         });
+
+
     }
 
     private static SecretKey getSecretKey() {
