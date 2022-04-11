@@ -98,6 +98,13 @@ public class ThirdActivity extends AppCompatActivity {
         // For DB
         SQLiteDatabase.loadLibs(this);
 
+        // For RecyclerView. Initializing empty recyclerView and adapter to avoid the error.
+        recyclerView = findViewById(R.id.recyclerView);
+        ArrayList<Bitmap> emptyBitmap = new ArrayList<>();
+        myAdapter = new RVAdapter(ThirdActivity.this,emptyBitmap);
+        recyclerView.setAdapter(myAdapter);
+        GridLayoutManager layoutManager2 = new GridLayoutManager(ThirdActivity.this,1);
+        recyclerView.setLayoutManager(layoutManager2);
 
         // For all the FAB'S
         addPhotoText = findViewById(R.id.addPhotoText);
