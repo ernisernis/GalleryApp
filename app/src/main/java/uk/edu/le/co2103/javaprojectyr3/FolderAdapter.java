@@ -1,10 +1,12 @@
 package uk.edu.le.co2103.javaprojectyr3;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,6 +43,16 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
     public void onBindViewHolder(@NonNull FolderAdapter.ViewHolder holder, int position) {
         Folder folder = folders.get(position);
         holder.folderTitle.setText(folder.getTitle());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                holder.getAdapterPosition();
+//                System.out.println(folders.get(holder.getAdapterPosition()).title);
+                Intent intent = new Intent(context,ThirdActivity.class);
+                intent.putExtra("FOLDERS_NAME", folders.get(holder.getAdapterPosition()).title);
+                context.startActivity(intent);
+            }
+        });
     }
 
 

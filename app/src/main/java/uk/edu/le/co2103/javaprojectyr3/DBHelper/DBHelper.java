@@ -163,9 +163,9 @@ public class DBHelper extends SQLiteOpenHelper {
 //        return images;
 //    }
 
-    public List<byte[]> getAllImagesByteArray(String password) {
+    public List<byte[]> getAllImagesByteArray(String password, String folderName) {
         SQLiteDatabase db = instance.getWritableDatabase(password);
-        Cursor cursor = db.rawQuery(String.format("SELECT * FROM '%s';", TABLE_NAME4), null);
+        Cursor cursor = db.rawQuery(String.format("SELECT * FROM '%s';", folderName), null);
         List<byte[]> imagesByteArray = new ArrayList<>();
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {

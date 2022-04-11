@@ -82,6 +82,7 @@ public class ThirdActivity extends AppCompatActivity {
     Boolean isAllFabsVisible;
 
     String currentPhotoPath;
+    String folderName;
     //    Button goBack;
     private RecyclerView recyclerView;
     ProgressDialog p;
@@ -145,7 +146,9 @@ public class ThirdActivity extends AppCompatActivity {
             try {
                 finalPw = passwordToDb();
                 System.out.println(finalPw);
-                imagesBytesDB = new ArrayList<>(DBHelper.getInstance(ThirdActivity.this).getAllImagesByteArray(finalPw));
+                folderName = getIntent().getExtras().getString("FOLDERS_NAME","defaultKey");
+                System.out.println(folderName);
+                imagesBytesDB = new ArrayList<>(DBHelper.getInstance(ThirdActivity.this).getAllImagesByteArray(finalPw,folderName));
                 bitmapArrayDB = new ArrayList<>();
                 for (int i = 0; i < imagesBytesDB.size(); i++) {
                     byte[] placeHolder = imagesBytesDB.get(i);
