@@ -86,11 +86,11 @@ public class DBHelper extends SQLiteOpenHelper {
 //        db.insert(TABLE_NAME2,null,values);
 //        db.close();
 //    }
-    public void insertNewImageBlob (byte[] image, String password) {
+    public void insertNewImageBlob (byte[] image, String password, String folderName) {
         SQLiteDatabase db = instance.getWritableDatabase(password);
         ContentValues values = new ContentValues();
-        values.put(COLUMN_EMAIL5, image);
-        db.insert(TABLE_NAME4,null,values);
+        values.put("ImageBlob", image);
+        db.insert(folderName,null,values);
         db.close();
     }
 //    public void updateEmail (String oldEmail, String newEmail) {
@@ -109,17 +109,17 @@ public class DBHelper extends SQLiteOpenHelper {
 //        db.close();
 //    }
 
-    public void deleteImage (String password, byte[] image) {
+    public void deleteImage (String password, byte[] image, String folderName) {
 
         SQLiteDatabase db = instance.getWritableDatabase(password);
-        Cursor cursor = db.rawQuery(String.format("SELECT * FROM '%s';", TABLE_NAME4), null);
+        Cursor cursor = db.rawQuery(String.format("SELECT * FROM '%s';", folderName), null);
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
-                @SuppressLint("Range") byte[] imageByteArray = cursor.getBlob(cursor.getColumnIndex(COLUMN_EMAIL5));
+                @SuppressLint("Range") byte[] imageByteArray = cursor.getBlob(cursor.getColumnIndex("ImageBlob"));
                 System.out.println(Arrays.toString(imageByteArray));
                 if (Arrays.toString(imageByteArray).equals(Arrays.toString(image))) {
-                    @SuppressLint("Range") int id = cursor.getInt(cursor.getColumnIndex(COLUMN_EMAIL4));
-                    db.delete(TABLE_NAME4, COLUMN_EMAIL4+"='"+ id +"'", null);
+                    @SuppressLint("Range") int id = cursor.getInt(cursor.getColumnIndex("_id"));
+                    db.delete(folderName, "_id"+"='"+ id +"'", null);
                     db.close();
                     cursor.close();
                     break;
@@ -169,7 +169,7 @@ public class DBHelper extends SQLiteOpenHelper {
         List<byte[]> imagesByteArray = new ArrayList<>();
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
-                @SuppressLint("Range") byte[] imageByteArray = cursor.getBlob(cursor.getColumnIndex(COLUMN_EMAIL5));
+                @SuppressLint("Range") byte[] imageByteArray = cursor.getBlob(cursor.getColumnIndex("ImageBlob"));
                 imagesByteArray.add(imageByteArray);
                 cursor.moveToNext();
             }

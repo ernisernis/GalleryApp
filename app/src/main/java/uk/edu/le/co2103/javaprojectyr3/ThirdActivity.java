@@ -196,7 +196,8 @@ public class ThirdActivity extends AppCompatActivity {
         protected void onPostExecute(String string) {
             System.out.println(string);
             if (string.equals("accepted") || string.equals("empty")) {
-                p.hide();
+//                p.hide();
+                p.dismiss();
             }
         }
     }
@@ -219,7 +220,7 @@ public class ThirdActivity extends AppCompatActivity {
             try {
                 int position = Integer.parseInt(strings[0]);
                 finalPw = passwordToDb();
-                DBHelper.getInstance(ThirdActivity.this).deleteImage(finalPw, imagesBytesDB.get(position));
+                DBHelper.getInstance(ThirdActivity.this).deleteImage(finalPw, imagesBytesDB.get(position), folderName);
                 runOnUiThread(() -> {
                     bitmapArrayDB.remove(position);
                     myAdapter.notifyItemRemoved(position);
@@ -236,7 +237,8 @@ public class ThirdActivity extends AppCompatActivity {
         protected void onPostExecute(String string) {
             System.out.println(string);
             if (string.equals("accepted") || string.equals("empty")) {
-                p.hide();
+//                p.hide();
+                p.dismiss();
             }
         }
     }
@@ -262,7 +264,7 @@ public class ThirdActivity extends AppCompatActivity {
                 Uri imageUri = Uri.parse(stringUri);
                 InputStream iStream = getContentResolver().openInputStream(imageUri);
                 byte[] inputData = getBytes(iStream);
-                DBHelper.getInstance(ThirdActivity.this).insertNewImageBlob(inputData,finalPw);
+                DBHelper.getInstance(ThirdActivity.this).insertNewImageBlob(inputData,finalPw, folderName);
                 return "proceed";
             } catch (IOException e) {
                 e.printStackTrace();
@@ -274,11 +276,13 @@ public class ThirdActivity extends AppCompatActivity {
         protected void onPostExecute(String string) {
             if (string.equals("proceed"))  {
                 Toast.makeText(ThirdActivity.this, "Uploading image suceeded!!!", Toast.LENGTH_LONG).show();
-                p.hide();
+//                p.hide();
+                p.dismiss();
                 MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
                 myAsyncTasks.execute();
             } else {
-                p.hide();
+//                p.hide();
+                p.dismiss();
                 Toast.makeText(ThirdActivity.this, "Uploading image failed!", Toast.LENGTH_SHORT).show();
             }
         }
@@ -296,7 +300,7 @@ public class ThirdActivity extends AppCompatActivity {
                 bitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
                 byte[] byteArray = stream.toByteArray();
                 bitmap.recycle();
-                DBHelper.getInstance(ThirdActivity.this).insertNewImageBlob(byteArray,finalPw);
+                DBHelper.getInstance(ThirdActivity.this).insertNewImageBlob(byteArray,finalPw, folderName);
                 MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
                 myAsyncTasks.execute();
             }
@@ -479,6 +483,7 @@ public class ThirdActivity extends AppCompatActivity {
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+
 
     }
 }
