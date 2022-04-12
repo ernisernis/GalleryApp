@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -50,12 +54,24 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
     public void onBindViewHolder(@NonNull FolderAdapter.ViewHolder holder, int position) {
         Folder folder = folders.get(position);
         holder.folderTitle.setText(folder.getTitle());
-        holder.folderCount.setText(String.valueOf(folder.getCount()));
+        String folderCount = "Photo count: " + folder.getCount();
+        holder.folderCount.setText(folderCount);
+
+        // Text font and color.
+        Typeface type = Typeface.createFromAsset(context.getAssets(), "Cabin.ttf");
+        Typeface typeItalic = Typeface.createFromAsset(context.getAssets(), "CabinItalic.ttf");
+        holder.folderTitle.setTextColor(Color.parseColor("#fcfdfb"));
+        holder.folderTitle.setTypeface(type);
+        holder.folderCount.setTextColor(Color.parseColor("#fcfdfb"));
+        holder.folderCount.setTypeface(typeItalic);
+
+
         byte [] singleImage = folder.getImage();
         if (singleImage != null) {
             BitmapFactory.Options options = new BitmapFactory.Options();
             Bitmap bitmap = BitmapFactory.decodeByteArray(singleImage,0,singleImage.length,options);
-            holder.folderImage.setImageBitmap(Bitmap.createScaledBitmap(bitmap,200,250,false));
+            holder.folderImage.setImageBitmap(Bitmap.createScaledBitmap(bitmap,240,250,false));
+//            holder.folderImage.setImageBitmap(Bitmap.createBitmap(bitmap));
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
