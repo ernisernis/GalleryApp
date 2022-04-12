@@ -38,6 +38,7 @@ public class FolderActivity extends AppCompatActivity {
     Button addFolder;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
+    String dbPass;
     // For recyclerView
     private ArrayList<Folder> folders = new ArrayList<>();
     // For retrieving from DB
@@ -56,10 +57,13 @@ public class FolderActivity extends AppCompatActivity {
 
         // Getting the folder names from the DB
         try {
-            ArrayList<String> folderNamesDB = new ArrayList<>(DBHelper.getInstance(FolderActivity.this).getAllFoldersStringArray(passwordToDb()));
+            dbPass = passwordToDb();
+            ArrayList<String> folderNamesDB = new ArrayList<>(DBHelper.getInstance(FolderActivity.this).getAllFoldersStringArray(dbPass));
             // Putting the folder names to the Object (folder) list
             for (int i = 0; i < folderNamesDB.size(); i++) {
-                Folder folder = new Folder(folderNamesDB.get(i));
+                int count = DBHelper.getInstance(FolderActivity.this).getFolderImageCount(dbPass, folderNamesDB.get(i));
+                byte[] firstImage = DBHelper.getInstance(FolderActivity.this).getFirstFolderImage(dbPass, folderNamesDB.get(i));
+                Folder folder = new Folder(folderNamesDB.get(i), count, firstImage);
                 folders.add(folder);
             }
         } catch (NoSuchPaddingException | InvalidKeyException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {

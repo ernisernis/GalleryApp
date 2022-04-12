@@ -83,7 +83,6 @@ public class ThirdActivity extends AppCompatActivity {
 
     String currentPhotoPath;
     String folderName;
-    //    Button goBack;
     private RecyclerView recyclerView;
     ProgressDialog p;
 
@@ -173,7 +172,7 @@ public class ThirdActivity extends AppCompatActivity {
                 GridLayoutManager layoutManager = new GridLayoutManager(ThirdActivity.this,4);
                 runOnUiThread(() -> {
 
-                    // Stuff that updates the UI
+                    // Functions that updates the UI
                     recyclerView.setAdapter(myAdapter);
                     recyclerView.setLayoutManager(layoutManager);
                     recyclerView.addOnItemTouchListener(new RecyclerTouchListener(ThirdActivity.this, recyclerView, new RecyclerTouchListener.ClickListener() {

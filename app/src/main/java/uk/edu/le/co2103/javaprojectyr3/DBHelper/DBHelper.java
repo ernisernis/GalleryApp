@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import net.sqlcipher.Cursor;
+import net.sqlcipher.CursorIndexOutOfBoundsException;
 import net.sqlcipher.SQLException;
 import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteOpenHelper;
@@ -194,6 +195,30 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return foldersStringArray;
+    }
+
+    public int getFolderImageCount(String password, String folderName) {
+        SQLiteDatabase db = instance.getWritableDatabase(password);
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) as count FROM " + folderName, null);
+        cursor.moveToFirst();
+        @SuppressLint("Range") int folderCount = cursor.getInt(cursor.getColumnIndex("count"));
+        return folderCount;
+    }
+
+    @SuppressLint("Range")
+    public byte[] getFirstFolderImage(String password, String folderName) {
+        SQLiteDatabase db = instance.getWritableDatabase(password);
+        Cursor cursor = db.rawQuery("SELECT ImageBlob FROM " + folderName,null);
+        byte[] firstImageByte;
+        try {
+            cursor.moveToFirst();
+            firstImageByte = cursor.getBlob(cursor.getColumnIndex("ImageBlob"));
+            System.out.println(firstImageByte);
+        } catch (CursorIndexOutOfBoundsException e) {
+            System.out.println(e);
+            return null;
+        }
+        return firstImageByte;
     }
 
     public void createFolder(String password, String folderName) {

@@ -8,11 +8,13 @@ import java.util.Arrays;
 public class Folder {
 
     String title;
-   ArrayList<Bitmap> bitmapArrayList;
+    byte[] image;
    int count;
 
-   public Folder(String title) {
+   public Folder(String title, int count, byte[] image) {
        this.title = title;
+       this.count = count;
+       this.image = image;
    }
 
     public String getTitle() {
@@ -23,17 +25,17 @@ public class Folder {
         this.title = title;
     }
 
-    public ArrayList<Bitmap> getBitmapArrayList() {
-        return bitmapArrayList;
-    }
-
-    public void setBitmapArrayList(ArrayList<Bitmap> bitmapArrayList) {
-        this.bitmapArrayList = bitmapArrayList;
-    }
-
     public int getCount() { return count; }
 
-    public void setCount (ArrayList<Bitmap> bitmapArrayList) {
-        this.count = bitmapArrayList.size();
+    public void setCount ( int count) {
+       this.count = count;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 }
