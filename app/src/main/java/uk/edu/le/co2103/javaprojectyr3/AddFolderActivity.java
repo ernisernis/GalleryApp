@@ -84,10 +84,14 @@ public class AddFolderActivity extends AppCompatActivity {
                     DBHelper.getInstance(AddFolderActivity.this).createFolder(dbPassword, inputFolderName.getText().toString());
                     Intent intent = new Intent(AddFolderActivity.this,FolderActivity.class);
                     startActivity(intent);
-                } else {
-                    Toast.makeText(AddFolderActivity.this, "Name is empty!", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
 
+        cancelText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
             }
         });
 
