@@ -1,5 +1,6 @@
 package uk.edu.le.co2103.javaprojectyr3;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,7 +21,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import uk.edu.le.co2103.javaprojectyr3.DBHelper.DBHelper;
+
 public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder> {
+
+    private static FolderAdapter instance;
 
     private Context context;
     private ArrayList<Folder> folders;
@@ -30,15 +35,18 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
         this.folders = folders;
     }
 
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView folderTitle;
         TextView folderCount;
         ImageView folderImage;
+        ImageView folderImage2;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             folderTitle = itemView.findViewById(R.id.folderTitle);
             folderCount = itemView.findViewById(R.id.folderCount);
             folderImage = itemView.findViewById(R.id.singleImageFolder);
+            folderImage2= itemView.findViewById(R.id.singleImageFolder2);
         }
     }
 
@@ -62,16 +70,19 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
         Typeface typeItalic = Typeface.createFromAsset(context.getAssets(), "CabinItalic.ttf");
         holder.folderTitle.setTextColor(Color.parseColor("#fcfdfb"));
         holder.folderTitle.setTypeface(type);
-        holder.folderCount.setTextColor(Color.parseColor("#fcfdfb"));
+        holder.folderCount.setTextColor(Color.parseColor("#a6a6a6"));
         holder.folderCount.setTypeface(typeItalic);
 
 
         byte [] singleImage = folder.getImage();
         if (singleImage != null) {
+            holder.folderImage2.setVisibility(View.GONE);
             BitmapFactory.Options options = new BitmapFactory.Options();
             Bitmap bitmap = BitmapFactory.decodeByteArray(singleImage,0,singleImage.length,options);
             holder.folderImage.setImageBitmap(Bitmap.createScaledBitmap(bitmap,240,250,false));
 //            holder.folderImage.setImageBitmap(Bitmap.createBitmap(bitmap));
+        } else {
+            holder.folderImage.setVisibility(View.GONE);
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,7 +91,8 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
 //                System.out.println(folders.get(holder.getAdapterPosition()).title);
                 Intent intent = new Intent(context,ThirdActivity.class);
                 intent.putExtra("FOLDERS_NAME", folders.get(holder.getAdapterPosition()).title);
-                context.startActivity(intent);
+                ((Activity) context).startActivityForResult(intent, 1);
+//                context.startActivity(intent);
             }
         });
     }
@@ -89,6 +101,21 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
     @Override
     public int getItemCount() {
         return folders.size();
+    }
+
+    public void clear() {
+        int size = folders.size();
+        if (size > 0) {
+            for (int i = 0; i < size; i++) {
+                folders.remove(0);
+            }
+            notifyItemRangeChanged(0,size);
+        }
+    }
+
+    static public synchronized FolderAdapter getInstance(Context ct, ArrayList<Folder> folders){
+        if (instance==null) instance = new FolderAdapter(ct, folders);
+        return instance;
     }
 
 }

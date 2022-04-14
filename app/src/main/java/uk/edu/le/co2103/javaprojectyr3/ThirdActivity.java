@@ -1,6 +1,7 @@
 package uk.edu.le.co2103.javaprojectyr3;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -74,6 +75,9 @@ public class ThirdActivity extends AppCompatActivity {
 
     ImageView imageView;
     RVAdapter myAdapter;
+
+
+    int changedActivityStatus = 0;
 
 
     // Fabs functionalities
@@ -301,6 +305,7 @@ public class ThirdActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
 
             if(requestCode == CAMERA_REQUEST_CODE) {
+                changedActivityStatus = 1;
                 Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
@@ -313,10 +318,11 @@ public class ThirdActivity extends AppCompatActivity {
 
             if (requestCode == GALLERY_SELECT_PICTURE) {
 
+                changedActivityStatus = 1;
                 final Uri imageUri = data.getData();
-                    String imageStrUri = imageUri.toString();
-                    MyAsyncTasksGallery myAsyncTasksGallery = new MyAsyncTasksGallery();
-                    myAsyncTasksGallery.execute(imageStrUri);
+                String imageStrUri = imageUri.toString();
+                MyAsyncTasksGallery myAsyncTasksGallery = new MyAsyncTasksGallery();
+                myAsyncTasksGallery.execute(imageStrUri);
             }
 
 
@@ -490,6 +496,20 @@ public class ThirdActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
 
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (changedActivityStatus == 1) {
+            Intent returnIntent = new Intent();
+            setResult(Activity.RESULT_OK,returnIntent);
+            finish();
+        } else {
+            Intent returnIntent = new Intent();
+            setResult(Activity.RESULT_CANCELED,returnIntent);
+            finish();
+        }
 
     }
 }

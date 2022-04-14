@@ -1,10 +1,16 @@
 package uk.edu.le.co2103.javaprojectyr3;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,39 +49,22 @@ public class FolderActivity extends AppCompatActivity {
     private ArrayList<Folder> folders = new ArrayList<>();
     // For retrieving from DB
     private static final String keyAlias = "key11";
+    ProgressDialog p;
 
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_folder);
 
+
         recyclerView = findViewById(R.id.folderRecyclerView);
+        ArrayList<Folder> emptyFolder = new ArrayList<>();
+        adapter = new FolderAdapter(FolderActivity.this,emptyFolder);
+        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // For DB
         SQLiteDatabase.loadLibs(this);
-
-        // Getting the folder names from the DB
-        try {
-            dbPass = passwordToDb();
-            ArrayList<String> folderNamesDB = new ArrayList<>(DBHelper.getInstance(FolderActivity.this).getAllFoldersStringArray(dbPass));
-            // Putting the folder names to the Object (folder) list
-            for (int i = 0; i < folderNamesDB.size(); i++) {
-                int count = DBHelper.getInstance(FolderActivity.this).getFolderImageCount(dbPass, folderNamesDB.get(i));
-                byte[] firstImage = DBHelper.getInstance(FolderActivity.this).getFirstFolderImage(dbPass, folderNamesDB.get(i));
-                Folder folder = new Folder(folderNamesDB.get(i), count, firstImage);
-                folders.add(folder);
-            }
-        } catch (NoSuchPaddingException | InvalidKeyException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-        }
-
-        // Adapter
-        adapter = new FolderAdapter(this, folders);
-        recyclerView.setAdapter(adapter);
-
-
-
 
         addFolder = findViewById(R.id.addFolderButton);
         addFolder.setOnClickListener(new View.OnClickListener() {
@@ -85,6 +74,9 @@ public class FolderActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
+        myAsyncTasks.execute();
     }
 
     private static SecretKey getSecretKey() {
@@ -125,5 +117,75 @@ public class FolderActivity extends AppCompatActivity {
         }
         return array;
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                System.out.println("Has back pressed!!!");
+                FolderAdapter.getInstance(FolderActivity.this,folders).clear();
+                MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
+                myAsyncTasks.execute();
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+                System.out.println("Result cancelled!!!");
+            }
+        }
+    }
+
+    public class MyAsyncTasks extends AsyncTask<String,String,String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            p = new ProgressDialog(FolderActivity.this);
+            p.setMessage("Please wait...");
+            p.setIndeterminate(false);
+            p.setCancelable(false);
+            p.show();
+        }
+
+
+        @Override
+        protected String doInBackground(String... strings) {
+            // Getting the folder names, first image, count from the DB
+            try {
+                dbPass = passwordToDb();
+                ArrayList<String> folderNamesDB = new ArrayList<>(DBHelper.getInstance(FolderActivity.this).getAllFoldersStringArray(dbPass));
+                // Putting the folder names to the Object (folder) list
+                for (int i = 0; i < folderNamesDB.size(); i++) {
+                    int count = DBHelper.getInstance(FolderActivity.this).getFolderImageCount(dbPass, folderNamesDB.get(i));
+                    byte[] firstImage = DBHelper.getInstance(FolderActivity.this).getFirstFolderImage(dbPass, folderNamesDB.get(i));
+                    Folder folder = new Folder(folderNamesDB.get(i), count, firstImage);
+                    folders.add(folder);
+                }
+            } catch (NoSuchPaddingException | InvalidKeyException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
+                e.printStackTrace();
+            }
+
+            runOnUiThread(() -> {
+
+                adapter = new FolderAdapter(FolderActivity.this, folders);
+                recyclerView.setAdapter(adapter);
+
+                Typeface type = Typeface.createFromAsset(getAssets(), "Cabin.ttf");
+                TextView albumText = findViewById(R.id.albumText);
+                albumText.setTypeface(type);
+                albumText.setTextColor(Color.parseColor("#fcfdfb"));
+
+            });
+            // Adapter
+            return "accepted";
+        }
+
+        @Override
+        protected void onPostExecute(String string) {
+            if (string.equals("accepted")) {
+                p.dismiss();
+            }
+        }
+
+    }
 }
