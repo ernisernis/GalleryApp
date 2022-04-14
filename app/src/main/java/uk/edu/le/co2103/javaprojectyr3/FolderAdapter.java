@@ -1,7 +1,9 @@
 package uk.edu.le.co2103.javaprojectyr3;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -29,10 +31,12 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
 
     private Context context;
     private ArrayList<Folder> folders;
+    private String dbPass;
 
-    public FolderAdapter(Context ct, ArrayList<Folder> folders) {
+    public FolderAdapter(Context ct, ArrayList<Folder> folders, String dbPass) {
         this.context = ct;
         this.folders = folders;
+        this.dbPass = dbPass;
     }
 
 
@@ -95,6 +99,34 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
 //                context.startActivity(intent);
             }
         });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setCancelable(true);
+                builder.setTitle("Delete this folder");
+                builder.setMessage("Are you sure ?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(context, "Yes clicked!" + holder.folderTitle.getText(), Toast.LENGTH_SHORT).show();
+                        DBHelper.getInstance(context).deleteFolder(dbPass, (String) holder.folderTitle.getText());
+                    }
+                });
+                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        Toast.makeText(context, "No clicked", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+                return true;
+            }
+        });
     }
 
 
@@ -113,8 +145,8 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
         }
     }
 
-    static public synchronized FolderAdapter getInstance(Context ct, ArrayList<Folder> folders){
-        if (instance==null) instance = new FolderAdapter(ct, folders);
+    static public synchronized FolderAdapter getInstance(Context ct, ArrayList<Folder> folders, String dbPass){
+        if (instance==null) instance = new FolderAdapter(ct, folders, dbPass);
         return instance;
     }
 

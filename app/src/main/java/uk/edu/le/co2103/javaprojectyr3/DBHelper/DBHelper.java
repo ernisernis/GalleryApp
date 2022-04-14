@@ -129,6 +129,12 @@ public class DBHelper extends SQLiteOpenHelper {
             }
         }
     }
+    public void deleteFolder (String password, String folderName) {
+        SQLiteDatabase db = instance.getWritableDatabase(password);
+//        db.rawQuery(String.format("DROP TABLE IF EXISTS " + folderName + ";", "sqlite_master"),null);
+        db.execSQL("DROP TABLE IF EXISTS " + folderName);
+        db.close();
+    }
 //    public List<String> getAllEmail() {
 //        SQLiteDatabase db = instance.getWritableDatabase(PASS_PHARSE);
 //

@@ -228,6 +228,7 @@ public class ThirdActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... strings) {
             try {
+                changedActivityStatus = 1;
                 int position = Integer.parseInt(strings[0]);
                 finalPw = passwordToDb();
                 DBHelper.getInstance(ThirdActivity.this).deleteImage(finalPw, imagesBytesDB.get(position), folderName);

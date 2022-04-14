@@ -59,7 +59,7 @@ public class FolderActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.folderRecyclerView);
         ArrayList<Folder> emptyFolder = new ArrayList<>();
-        adapter = new FolderAdapter(FolderActivity.this,emptyFolder);
+        adapter = new FolderAdapter(FolderActivity.this,emptyFolder,dbPass);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -124,7 +124,7 @@ public class FolderActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
                 System.out.println("Has back pressed!!!");
-                FolderAdapter.getInstance(FolderActivity.this,folders).clear();
+                FolderAdapter.getInstance(FolderActivity.this,folders,dbPass).clear();
                 MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
                 myAsyncTasks.execute();
             }
@@ -167,7 +167,7 @@ public class FolderActivity extends AppCompatActivity {
 
             runOnUiThread(() -> {
 
-                adapter = new FolderAdapter(FolderActivity.this, folders);
+                adapter = new FolderAdapter(FolderActivity.this, folders,dbPass);
                 recyclerView.setAdapter(adapter);
 
                 Typeface type = Typeface.createFromAsset(getAssets(), "Cabin.ttf");
