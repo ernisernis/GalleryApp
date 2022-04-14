@@ -11,4 +11,7 @@
     <color name="darkBlueBG">#1f212d</color>
     <color name="lightBlueRV">#2e303c</color>
     <color name="whiteText">#fcfdfb</color>
+    <color name="glowColor">#808080</color>
+    <color name="blueButton">#66a3ff</color>
+    <color name="hintColor">#646672</color>
 </resources>

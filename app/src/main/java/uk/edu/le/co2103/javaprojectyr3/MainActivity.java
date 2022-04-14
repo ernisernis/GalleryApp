@@ -9,6 +9,8 @@ import androidx.core.content.ContextCompat;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.hardware.biometrics.BiometricManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +18,8 @@ import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -54,9 +58,11 @@ public class MainActivity extends AppCompatActivity {
     Button lgn_btn;
     Button button2;
     Button button3;
+    TextView txtView;
+    LinearLayout lnrLayout;
 
 
-    @RequiresApi(api = Build.VERSION_CODES.R)
+//    @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +78,13 @@ public class MainActivity extends AppCompatActivity {
         button2 = findViewById(R.id.button2);
         button3 = findViewById(R.id.button3);
         lgn_btn = findViewById(R.id.login_btn);
+        txtView = findViewById(R.id.txtView);
+        lnrLayout = findViewById(R.id.linearLayoutContainer);
+
+        Typeface typeItalic = Typeface.createFromAsset(MainActivity.this.getAssets(), "CabinItalic.ttf");
+        txtView.setTextColor(Color.parseColor("#fcfdfb"));
+        txtView.setTypeface(typeItalic);
+
 
 //        clickMe.setOnClickListener(v -> {
 //
@@ -143,6 +156,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        lnrLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.this, "Clicked!", Toast.LENGTH_SHORT).show();
+                biometricPrompt.authenticate(promptInfo);
+            }
+        });
     }
 
     private static String generatePassword(){

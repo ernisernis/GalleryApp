@@ -9,18 +9,28 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_above="@+id/txtView"
-        android:src="@drawable/fingerprint_dialog_fp_icon" />
-
-
-    <TextView
-        android:id="@+id/txtView"
+    <LinearLayout
+        android:id="@+id/linearLayoutContainer"
+        android:orientation="vertical"
+        android:gravity="center"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Use your fingerprint to login" />
+        android:layout_height="wrap_content">
+
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_above="@+id/txtView"
+            android:src="@drawable/fingerprint_dialog_fp_icon"
+            app:tint="@color/whiteText" />
+
+
+        <TextView
+            android:id="@+id/txtView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Use your fingerprint to unlock" />
+    </LinearLayout>
     <Button
         android:layout_marginTop="5dp"
         android:id="@+id/login_btn"

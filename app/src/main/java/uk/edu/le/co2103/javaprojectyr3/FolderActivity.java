@@ -17,6 +17,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import net.sqlcipher.database.SQLiteDatabase;
 
 import java.io.IOException;
@@ -41,7 +43,8 @@ import uk.edu.le.co2103.javaprojectyr3.DBHelper.DBHelper;
 
 public class FolderActivity extends AppCompatActivity {
 
-    Button addFolder;
+    FloatingActionButton addFolder;
+//    Button glowButton;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     String dbPass;
@@ -65,6 +68,8 @@ public class FolderActivity extends AppCompatActivity {
 
         // For DB
         SQLiteDatabase.loadLibs(this);
+
+
 
         addFolder = findViewById(R.id.addFolderButton);
         addFolder.setOnClickListener(new View.OnClickListener() {
