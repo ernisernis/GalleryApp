@@ -11,6 +11,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -73,7 +75,7 @@ public class ThirdActivity extends AppCompatActivity {
     private static final String keyAlias = "key11";
     private String finalPw;
 
-    ImageView imageView;
+    ImageView imageView, backButton;
     RVAdapter myAdapter;
 
 
@@ -85,6 +87,9 @@ public class ThirdActivity extends AppCompatActivity {
     TextView addPhotoText, takePhotoText;
     Boolean isAllFabsVisible;
 
+    TextView folderTitle, folderCountNumber;
+    ImageView folderImage;
+    int folderCount;
     String currentPhotoPath;
     String folderName;
     private RecyclerView recyclerView;
@@ -108,6 +113,7 @@ public class ThirdActivity extends AppCompatActivity {
         recyclerView.setAdapter(myAdapter);
         GridLayoutManager layoutManager2 = new GridLayoutManager(ThirdActivity.this,1);
         recyclerView.setLayoutManager(layoutManager2);
+        backButton = findViewById(R.id.backButton);
 
         // For all the FAB'S
         addPhotoText = findViewById(R.id.addPhotoText);
@@ -133,7 +139,23 @@ public class ThirdActivity extends AppCompatActivity {
             hideFabsAndText();
         });
 
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (changedActivityStatus == 1) {
+                    Intent returnIntent = new Intent();
+                    setResult(Activity.RESULT_OK,returnIntent);
+                    finish();
+                } else {
+                    Intent returnIntent = new Intent();
+                    setResult(Activity.RESULT_CANCELED,returnIntent);
+                    finish();
+                }
+            }
+        });
 
+
+        folderCount = getIntent().getExtras().getInt("PHOTO_COUNT", 0);
         MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
         myAsyncTasks.execute();
 
@@ -166,7 +188,6 @@ public class ThirdActivity extends AppCompatActivity {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(placeHolder,0,placeHolder.length,options);
                     bitmapArrayDB.add(bitmap);
                 }
-
                 recyclerView = findViewById(R.id.recyclerView);
                 recyclerView.setItemViewCacheSize(20);
                 recyclerView.setDrawingCacheEnabled(true);
@@ -176,6 +197,22 @@ public class ThirdActivity extends AppCompatActivity {
                 GridLayoutManager layoutManager = new GridLayoutManager(ThirdActivity.this,4);
                 runOnUiThread(() -> {
 
+                    folderImage = findViewById(R.id.folderImage);
+                    folderTitle = findViewById(R.id.folderTitle);
+                    folderCountNumber = findViewById(R.id.folderCountNumber);
+                    if (bitmapArrayDB.size()!=0) {
+                        folderImage.setImageBitmap(Bitmap.createScaledBitmap(bitmapArrayDB.get(0),80,80,false));
+//                        holder.myImage.setImageBitmap(Bitmap.createScaledBitmap(bmp,200,250,false));
+                    }
+                    folderTitle.setText(folderName);
+                    Typeface type = Typeface.createFromAsset(ThirdActivity.this.getAssets(), "Cabin.ttf");
+                    Typeface typeItalic = Typeface.createFromAsset(ThirdActivity.this.getAssets(), "CabinItalic.ttf");
+                    folderTitle.setTextColor(Color.parseColor("#fcfdfb"));
+                    folderTitle.setTypeface(type);
+                    folderCountNumber.setTextColor(Color.parseColor("#a6a6a6"));
+                    folderCountNumber.setTypeface(typeItalic);
+                    String folderCountNr = "Photo count: " + folderCount;
+                    folderCountNumber.setText(folderCountNr);
                     // Functions that updates the UI
                     recyclerView.setAdapter(myAdapter);
                     recyclerView.setLayoutManager(layoutManager);
@@ -233,6 +270,9 @@ public class ThirdActivity extends AppCompatActivity {
                 finalPw = passwordToDb();
                 DBHelper.getInstance(ThirdActivity.this).deleteImage(finalPw, imagesBytesDB.get(position), folderName);
                 runOnUiThread(() -> {
+                    folderCount--;
+                    String folderCountNr = "Photo count: " + folderCount;
+                    folderCountNumber.setText(folderCountNr);
                     bitmapArrayDB.remove(position);
                     myAdapter.notifyItemRemoved(position);
                     myAdapter.notifyItemRangeChanged(position,bitmapArrayDB.size());
@@ -271,6 +311,9 @@ public class ThirdActivity extends AppCompatActivity {
         protected String doInBackground(String... strings) {
 
             try {
+                folderCount++;
+                String folderCountNr = "Photo count: " + folderCount;
+                folderCountNumber.setText(folderCountNr);
                 String stringUri = strings[0];
                 Uri imageUri = Uri.parse(stringUri);
                 InputStream iStream = getContentResolver().openInputStream(imageUri);
@@ -306,6 +349,9 @@ public class ThirdActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
 
             if(requestCode == CAMERA_REQUEST_CODE) {
+                folderCount++;
+//                String folderCountNr = "Photo count: " + folderCount;
+//                folderCountNumber.setText(folderCountNr);
                 changedActivityStatus = 1;
                 Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -318,7 +364,7 @@ public class ThirdActivity extends AppCompatActivity {
             }
 
             if (requestCode == GALLERY_SELECT_PICTURE) {
-
+                folderCount++;
                 changedActivityStatus = 1;
                 final Uri imageUri = data.getData();
                 String imageStrUri = imageUri.toString();

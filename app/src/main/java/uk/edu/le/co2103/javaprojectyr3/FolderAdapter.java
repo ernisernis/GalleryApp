@@ -95,6 +95,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
 //                System.out.println(folders.get(holder.getAdapterPosition()).title);
                 Intent intent = new Intent(context,ThirdActivity.class);
                 intent.putExtra("FOLDERS_NAME", folders.get(holder.getAdapterPosition()).title);
+                intent.putExtra("PHOTO_COUNT", folder.getCount());
                 ((Activity) context).startActivityForResult(intent, 1);
 //                context.startActivity(intent);
             }
