@@ -112,6 +112,8 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Toast.makeText(context, "Yes clicked!" + holder.folderTitle.getText(), Toast.LENGTH_SHORT).show();
                         DBHelper.getInstance(context).deleteFolder(dbPass, (String) holder.folderTitle.getText());
+                        folders.remove(folders.get(holder.getAdapterPosition()));
+                        notifyDataSetChanged();
                     }
                 });
                 builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {

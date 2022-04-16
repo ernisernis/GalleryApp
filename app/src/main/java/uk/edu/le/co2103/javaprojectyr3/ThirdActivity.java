@@ -112,7 +112,24 @@ public class ThirdActivity extends AppCompatActivity {
         // For RecyclerView. Initializing empty recyclerView and adapter to avoid the error.
         recyclerView = findViewById(R.id.recyclerView);
         ArrayList<Bitmap> emptyBitmap = new ArrayList<>();
-        myAdapter = new RVAdapter(ThirdActivity.this,emptyBitmap);
+        ArrayList<byte[]> emptyByteArr = new ArrayList<>();
+        folderName = getIntent().getExtras().getString("FOLDERS_NAME","defaultKey");
+        try {
+            finalPw = passwordToDb();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
+        }
+        myAdapter = new RVAdapter(ThirdActivity.this,emptyBitmap,finalPw, folderName, emptyByteArr);
         recyclerView.setAdapter(myAdapter);
         GridLayoutManager layoutManager2 = new GridLayoutManager(ThirdActivity.this,1);
         recyclerView.setLayoutManager(layoutManager2);
@@ -191,10 +208,8 @@ public class ThirdActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... strings) {
-            try {
-                finalPw = passwordToDb();
+//                finalPw = passwordToDb();
                 System.out.println(finalPw);
-                folderName = getIntent().getExtras().getString("FOLDERS_NAME","defaultKey");
                 System.out.println(folderName);
                 imagesBytesDB = new ArrayList<>(DBHelper.getInstance(ThirdActivity.this).getAllImagesByteArray(finalPw,folderName));
                 bitmapArrayDB = new ArrayList<>();
@@ -209,7 +224,7 @@ public class ThirdActivity extends AppCompatActivity {
                 recyclerView.setDrawingCacheEnabled(true);
                 recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
                 recyclerView.setHasFixedSize(true);
-                myAdapter = new RVAdapter(ThirdActivity.this,bitmapArrayDB);
+                myAdapter = new RVAdapter(ThirdActivity.this,bitmapArrayDB,finalPw, folderName, imagesBytesDB);
                 GridLayoutManager layoutManager = new GridLayoutManager(ThirdActivity.this,4);
                 runOnUiThread(() -> {
 
@@ -239,20 +254,14 @@ public class ThirdActivity extends AppCompatActivity {
                             singleImageClick(view,position);
                         }
 
-                        @Override
-                        public void onLongClick(View view, int position) {
-                            singleImageLongClick(view,position);
-                        }
+//                        @Override
+//                        public void onLongClick(View view, int position) {
+//                            singleImageLongClick(view,position);
+//                        }
                     }));
                 });
 
-
-
                 return "accepted";
-            } catch (NoSuchPaddingException | InvalidAlgorithmParameterException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException e) {
-                e.printStackTrace();
-            }
-            return "notAccepted";
         }
 
         @Override
@@ -535,34 +544,34 @@ public class ThirdActivity extends AppCompatActivity {
         });
     }
 
-    private void singleImageLongClick(View view, int position) {
-
-        Toast.makeText(ThirdActivity.this, "Long message clicked", Toast.LENGTH_SHORT).show();
-        AlertDialog.Builder builder = new AlertDialog.Builder(ThirdActivity.this);
-        builder.setCancelable(true);
-        builder.setTitle("Delete this image");
-        builder.setMessage("Are you sure ?");
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                MyAsyncTaskReload myAsyncTaskReload = new MyAsyncTaskReload();
-                myAsyncTaskReload.execute(Integer.toString(position));
-                Toast.makeText(ThirdActivity.this, "Yes clicked", Toast.LENGTH_SHORT).show();
-            }
-        });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-                Toast.makeText(ThirdActivity.this, "No clicked", Toast.LENGTH_SHORT).show();
-
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
-
-    }
+//    private void singleImageLongClick(View view, int position) {
+//
+//        Toast.makeText(ThirdActivity.this, "Long message clicked", Toast.LENGTH_SHORT).show();
+//        AlertDialog.Builder builder = new AlertDialog.Builder(ThirdActivity.this);
+//        builder.setCancelable(true);
+//        builder.setTitle("Delete this image");
+//        builder.setMessage("Are you sure ?");
+//        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                MyAsyncTaskReload myAsyncTaskReload = new MyAsyncTaskReload();
+//                myAsyncTaskReload.execute(Integer.toString(position));
+//                Toast.makeText(ThirdActivity.this, "Yes clicked", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//
+//                Toast.makeText(ThirdActivity.this, "No clicked", Toast.LENGTH_SHORT).show();
+//
+//            }
+//        });
+//        AlertDialog dialog = builder.create();
+//        dialog.show();
+//
+//
+//    }
 
     @Override
     public void onBackPressed() {
