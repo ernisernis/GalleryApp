@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -87,6 +89,7 @@ public class ThirdActivity extends AppCompatActivity {
     TextView addPhotoText, takePhotoText;
     Boolean isAllFabsVisible;
 
+    CardView imageCardView;
     TextView folderTitle, folderCountNumber;
     ImageView folderImage;
     int folderCount;
@@ -115,7 +118,9 @@ public class ThirdActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager2);
         backButton = findViewById(R.id.backButton);
 
+
         // For all the FAB'S
+        imageCardView = findViewById(R.id.imageCardView);
         addPhotoText = findViewById(R.id.addPhotoText);
         takePhotoText = findViewById(R.id.takePhotoText);
         fabBtn_Main = findViewById(R.id.fab_main);
@@ -126,8 +131,19 @@ public class ThirdActivity extends AppCompatActivity {
         addPhotoText.setVisibility(View.GONE);
         takePhotoText.setVisibility(View.GONE);
         isAllFabsVisible = false;
+        Typeface type = Typeface.createFromAsset(ThirdActivity.this.getAssets(), "Cabin.ttf");
+        addPhotoText.setTextColor(Color.parseColor("#fcfdfb"));
+        takePhotoText.setTextColor(Color.parseColor("#fcfdfb"));
+        addPhotoText.setTypeface(type);
+        takePhotoText.setTypeface(type);
 
-        fabBtn_Main.setOnClickListener(view -> mainFabButton());
+        fabBtn_Main.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mainFabButton();
+            }
+        });
+
 
         fabBtn_Add.setOnClickListener(view -> {
             askCameraPermissions();
@@ -507,11 +523,13 @@ public class ThirdActivity extends AppCompatActivity {
         imageView.setImageBitmap(bitmapArrayDB.get(position));
 
         imageView.setVisibility(View.VISIBLE);
+        imageCardView.setVisibility(View.GONE);
         recyclerView.setVisibility(View.GONE);
         fabBtn_Main.setVisibility(View.GONE);
 
         imageView.setOnClickListener(view1 -> {
             imageView.setVisibility(View.GONE);
+            imageCardView.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.VISIBLE);
             fabBtn_Main.setVisibility(View.VISIBLE);
         });

@@ -14,4 +14,5 @@
     <color name="glowColor">#808080</color>
     <color name="blueButton">#66a3ff</color>
     <color name="hintColor">#646672</color>
+    <color name="fabRed">#ff8080</color>
 </resources>

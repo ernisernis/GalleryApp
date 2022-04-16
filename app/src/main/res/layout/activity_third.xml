@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".ThirdActivity">
 
+
     <ImageView
         android:id="@+id/backButton"
         android:layout_marginTop="35dp"
@@ -16,6 +17,7 @@
         android:layout_height="32dp" />
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/imageCardView"
         android:backgroundTint="@color/hintColor"
         android:layout_marginTop="65dp"
         android:layout_width="90dp"
@@ -68,14 +70,6 @@
 <!--        android:layout_height="200dp" />-->
 
 
-    <com.ortiz.touchview.TouchImageView
-        android:background="@color/black"
-        android:layout_centerInParent="true"
-        android:id="@+id/singleImage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="invisible"
-        app:srcCompat="@drawable/ic_launcher_background" />
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -89,6 +83,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             app:backgroundTint="@color/blueButton"
             android:id="@+id/fab_main"
@@ -101,6 +96,7 @@
             app:fabSize="normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             app:backgroundTint="@color/blueButton"
@@ -148,6 +144,15 @@
             app:layout_constraintTop_toTopOf="@+id/fab_addPhoto" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.ortiz.touchview.TouchImageView
+        android:background="@color/black"
+        android:layout_centerInParent="true"
+        android:id="@+id/singleImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/ic_launcher_background" />
 
 
 </RelativeLayout>
