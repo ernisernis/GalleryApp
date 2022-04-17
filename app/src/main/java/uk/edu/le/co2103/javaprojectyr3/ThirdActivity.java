@@ -258,10 +258,10 @@ public class ThirdActivity extends AppCompatActivity {
                             singleImageClick(view,position);
                         }
 
-                        @Override
-                        public void onLongClick(View view, int position) {
-                            singleImageLongClick(view,position);
-                        }
+//                        @Override
+//                        public void onLongClick(View view, int position) {
+//                            singleImageLongClick(view,position);
+//                        }
                     }));
                 });
 
@@ -340,9 +340,11 @@ public class ThirdActivity extends AppCompatActivity {
         protected String doInBackground(String... strings) {
 
             try {
-                folderCount++;
-                String folderCountNr = "Photo count: " + folderCount;
-                folderCountNumber.setText(folderCountNr);
+//                runOnUiThread(() -> {
+//                    folderCount++;
+//                    String folderCountNr = "Photo count: " + folderCount;
+//                    folderCountNumber.setText(folderCountNr);
+//                });
                 String stringUri = strings[0];
                 Uri imageUri = Uri.parse(stringUri);
                 InputStream iStream = getContentResolver().openInputStream(imageUri);
@@ -531,6 +533,7 @@ public class ThirdActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(i, "Select Picture"), GALLERY_SELECT_PICTURE);
     }
 
+    // We hide the UI whenever the user clicks on the individual photo, and unhide when he clicks on it again.
     private void singleImageClick(View view, int position) {
         imageView = findViewById(R.id.singleImage);
         imageView.setImageBitmap(bitmapArrayDB.get(position));
@@ -548,36 +551,7 @@ public class ThirdActivity extends AppCompatActivity {
         });
     }
 
-    private void singleImageLongClick(View view, int position) {
-
-        System.out.println("SINGLE IMAGE LONG CLICKED!");
-        Toast.makeText(ThirdActivity.this, "Long message clicked", Toast.LENGTH_SHORT).show();
-//        AlertDialog.Builder builder = new AlertDialog.Builder(ThirdActivity.this);
-//        builder.setCancelable(true);
-//        builder.setTitle("Delete this image");
-//        builder.setMessage("Are you sure ?");
-//        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int i) {
-//                MyAsyncTaskReload myAsyncTaskReload = new MyAsyncTaskReload();
-//                myAsyncTaskReload.execute(Integer.toString(position));
-//                Toast.makeText(ThirdActivity.this, "Yes clicked", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int i) {
-//
-//                Toast.makeText(ThirdActivity.this, "No clicked", Toast.LENGTH_SHORT).show();
-//
-//            }
-//        });
-//        AlertDialog dialog = builder.create();
-//        dialog.show();
-
-
-    }
-
+    // Check if an activity needs to be updated (if user performed adding photos/deletion of photos
     @Override
     public void onBackPressed() {
         if (changedActivityStatus == 1) {
