@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,13 +29,15 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
     private Context context;
     private String dbPass;
     private String folderName;
+    private int folderNumber;
 
-    public RVAdapter(Context ct, ArrayList<Bitmap> images, String dbPass, String folderName, ArrayList<byte[]> data2) {
+    public RVAdapter(Context ct, ArrayList<Bitmap> images, String dbPass, String folderName, ArrayList<byte[]> data2, int folderNumber) {
         this.context = ct;
         this.data1 = images;
         this.dbPass = dbPass;
         this.folderName = folderName;
         this.data2 = data2;
+        this.folderNumber = folderNumber;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -58,7 +61,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull RVAdapter.MyViewHolder holder, int position) {
-
         Bitmap bmp = data1.get(position);
         holder.myImage.setImageBitmap(Bitmap.createScaledBitmap(bmp,200,250,false));
 
@@ -73,8 +75,11 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        DBHelper.getInstance(context).deleteImage(dbPass, (byte[]) data2.get(holder.getAdapterPosition()), folderName);
+                        DBHelper.getInstance(context).deleteImage(dbPass, data2.get(holder.getAdapterPosition()), folderName);
                         data1.remove(data1.get(holder.getAdapterPosition()));
+                        System.out.println(folderNumber + " DDDDDDDDDDD");
+                        folderNumber = folderNumber - 1;
+                        ((ThirdActivity)context).putCount(folderNumber);
                         notifyDataSetChanged();
                     }
                 });

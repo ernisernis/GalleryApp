@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -54,6 +55,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.text.BreakIterator;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,6 +79,7 @@ public class ThirdActivity extends AppCompatActivity {
     private static final String keyAlias = "key11";
     private String finalPw;
 
+
     ImageView imageView, backButton;
     RVAdapter myAdapter;
 
@@ -90,7 +93,8 @@ public class ThirdActivity extends AppCompatActivity {
     Boolean isAllFabsVisible;
 
     CardView imageCardView;
-    TextView folderTitle, folderCountNumber;
+    TextView folderTitle;
+    TextView folderCountNumber;
     ImageView folderImage;
     int folderCount;
     String currentPhotoPath;
@@ -114,6 +118,7 @@ public class ThirdActivity extends AppCompatActivity {
         ArrayList<Bitmap> emptyBitmap = new ArrayList<>();
         ArrayList<byte[]> emptyByteArr = new ArrayList<>();
         folderName = getIntent().getExtras().getString("FOLDERS_NAME","defaultKey");
+        folderCount = getIntent().getExtras().getInt("PHOTO_COUNT", 0);
         try {
             finalPw = passwordToDb();
         } catch (NoSuchPaddingException e) {
@@ -129,7 +134,7 @@ public class ThirdActivity extends AppCompatActivity {
         } catch (InvalidAlgorithmParameterException e) {
             e.printStackTrace();
         }
-        myAdapter = new RVAdapter(ThirdActivity.this,emptyBitmap,finalPw, folderName, emptyByteArr);
+        myAdapter = new RVAdapter(ThirdActivity.this,emptyBitmap,finalPw, folderName, emptyByteArr, folderCount);
         recyclerView.setAdapter(myAdapter);
         GridLayoutManager layoutManager2 = new GridLayoutManager(ThirdActivity.this,1);
         recyclerView.setLayoutManager(layoutManager2);
@@ -188,7 +193,6 @@ public class ThirdActivity extends AppCompatActivity {
         });
 
 
-        folderCount = getIntent().getExtras().getInt("PHOTO_COUNT", 0);
         MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
         myAsyncTasks.execute();
 
@@ -224,7 +228,7 @@ public class ThirdActivity extends AppCompatActivity {
                 recyclerView.setDrawingCacheEnabled(true);
                 recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
                 recyclerView.setHasFixedSize(true);
-                myAdapter = new RVAdapter(ThirdActivity.this,bitmapArrayDB,finalPw, folderName, imagesBytesDB);
+                myAdapter = new RVAdapter(ThirdActivity.this,bitmapArrayDB,finalPw, folderName, imagesBytesDB, folderCount);
                 GridLayoutManager layoutManager = new GridLayoutManager(ThirdActivity.this,4);
                 runOnUiThread(() -> {
 
@@ -254,10 +258,10 @@ public class ThirdActivity extends AppCompatActivity {
                             singleImageClick(view,position);
                         }
 
-//                        @Override
-//                        public void onLongClick(View view, int position) {
-//                            singleImageLongClick(view,position);
-//                        }
+                        @Override
+                        public void onLongClick(View view, int position) {
+                            singleImageLongClick(view,position);
+                        }
                     }));
                 });
 
@@ -544,9 +548,10 @@ public class ThirdActivity extends AppCompatActivity {
         });
     }
 
-//    private void singleImageLongClick(View view, int position) {
-//
-//        Toast.makeText(ThirdActivity.this, "Long message clicked", Toast.LENGTH_SHORT).show();
+    private void singleImageLongClick(View view, int position) {
+
+        System.out.println("SINGLE IMAGE LONG CLICKED!");
+        Toast.makeText(ThirdActivity.this, "Long message clicked", Toast.LENGTH_SHORT).show();
 //        AlertDialog.Builder builder = new AlertDialog.Builder(ThirdActivity.this);
 //        builder.setCancelable(true);
 //        builder.setTitle("Delete this image");
@@ -569,9 +574,9 @@ public class ThirdActivity extends AppCompatActivity {
 //        });
 //        AlertDialog dialog = builder.create();
 //        dialog.show();
-//
-//
-//    }
+
+
+    }
 
     @Override
     public void onBackPressed() {
@@ -586,4 +591,12 @@ public class ThirdActivity extends AppCompatActivity {
         }
 
     }
+    // This method is called by RVAdapter to update the Photo count after the image gets deleted
+        public void putCount(int count) {
+            System.out.println("I am in putCount");
+            System.out.println(count);
+            String folderCountNr = "Photo count: " + count;
+            folderCountNumber.setText(folderCountNr);
+        }
+
 }
