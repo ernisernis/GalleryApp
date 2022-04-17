@@ -56,10 +56,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String keyAlias = "key11";
     private static byte[] iv;
-    Button lgn_btn;
-    Button button2;
-    Button button3;
-    TextView txtView;
+//    Button lgn_btn;
+//    Button button2;
+    TextView txtView, appTitle;
     LinearLayout lnrLayout;
 
 
@@ -76,15 +75,19 @@ public class MainActivity extends AppCompatActivity {
         }
 
 //        clickMe = findViewById(R.id.button);
-        button2 = findViewById(R.id.button2);
-        button3 = findViewById(R.id.button3);
-        lgn_btn = findViewById(R.id.login_btn);
+        appTitle = findViewById(R.id.appTitle);
+//        button2 = findViewById(R.id.button2);
+//        lgn_btn = findViewById(R.id.login_btn);
         txtView = findViewById(R.id.txtView);
         lnrLayout = findViewById(R.id.linearLayoutContainer);
 
         Typeface typeItalic = Typeface.createFromAsset(MainActivity.this.getAssets(), "CabinItalic.ttf");
         txtView.setTextColor(Color.parseColor("#fcfdfb"));
         txtView.setTypeface(typeItalic);
+
+        Typeface type = Typeface.createFromAsset(MainActivity.this.getAssets(), "CabinItalic.ttf");
+        appTitle.setTextColor(Color.parseColor("#66a3ff"));
+        appTitle.setTypeface(type);
 
 
 //        clickMe.setOnClickListener(v -> {
@@ -94,15 +97,15 @@ public class MainActivity extends AppCompatActivity {
 //            startActivity(intent);
 //        });
 
-        button2.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this,FolderActivity.class);
-            startActivity(intent);
-        });
+//        button2.setOnClickListener(view -> {
+//            Intent intent = new Intent(MainActivity.this,FolderActivity.class);
+//            startActivity(intent);
+//        });
 
-        button3.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this,ThirdActivity.class);
-            startActivity(intent);
-        });
+//        button3.setOnClickListener(view -> {
+//            Intent intent = new Intent(MainActivity.this,ThirdActivity.class);
+//            startActivity(intent);
+//        });
         //Check if the user biometric authentication is available
 //        BiometricManager biometricManager = new BiometricManager();
 //        BiometricManager biometricManager = BiometricManager.from(this);
@@ -134,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
             public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
                 super.onAuthenticationSucceeded(result);
                 Toast.makeText(MainActivity.this, "Login success!", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this,ThirdActivity.class);
+                Intent intent = new Intent(MainActivity.this,FolderActivity.class);
                 startActivity(intent);
             }
 
@@ -150,12 +153,12 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButtonText("Cancel")
                 .build();
 
-        lgn_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                biometricPrompt.authenticate(promptInfo);
-            }
-        });
+//        lgn_btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                biometricPrompt.authenticate(promptInfo);
+//            }
+//        });
 
         lnrLayout.setOnClickListener(new View.OnClickListener() {
             @Override

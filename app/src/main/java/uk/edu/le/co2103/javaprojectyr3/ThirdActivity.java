@@ -533,7 +533,7 @@ public class ThirdActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(i, "Select Picture"), GALLERY_SELECT_PICTURE);
     }
 
-    // We hide the UI whenever the user clicks on the individual photo, and unhide when he clicks on it again.
+    // Hide the UI whenever the user clicks on the individual photo, and unhide when he clicks on it again.
     private void singleImageClick(View view, int position) {
         imageView = findViewById(R.id.singleImage);
         imageView.setImageBitmap(bitmapArrayDB.get(position));
