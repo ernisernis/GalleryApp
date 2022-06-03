@@ -3,22 +3,18 @@ package uk.edu.le.co2103.javaprojectyr3;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -84,51 +80,30 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
             BitmapFactory.Options options = new BitmapFactory.Options();
             Bitmap bitmap = BitmapFactory.decodeByteArray(singleImage,0,singleImage.length,options);
             holder.folderImage.setImageBitmap(Bitmap.createScaledBitmap(bitmap,240,250,false));
-//            holder.folderImage.setImageBitmap(Bitmap.createBitmap(bitmap));
         } else {
             holder.folderImage.setVisibility(View.GONE);
         }
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                holder.getAdapterPosition();
-//                System.out.println(folders.get(holder.getAdapterPosition()).title);
-                Intent intent = new Intent(context,ThirdActivity.class);
-                intent.putExtra("FOLDERS_NAME", folders.get(holder.getAdapterPosition()).title);
-                intent.putExtra("PHOTO_COUNT", folder.getCount());
-                ((Activity) context).startActivityForResult(intent, 1);
-//                context.startActivity(intent);
-            }
+        holder.itemView.setOnClickListener(view -> {
+            Intent intent = new Intent(context, IndividualFolderActivity.class);
+            intent.putExtra("FOLDERS_NAME", folders.get(holder.getAdapterPosition()).title);
+            intent.putExtra("PHOTO_COUNT", folder.getCount());
+            ((Activity) context).startActivityForResult(intent, 1);
         });
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setCancelable(true);
-                builder.setTitle("Delete this folder");
-                builder.setMessage("Are you sure ?");
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(context, "Yes clicked!" + holder.folderTitle.getText(), Toast.LENGTH_SHORT).show();
-                        DBHelper.getInstance(context).deleteFolder(dbPass, (String) holder.folderTitle.getText());
-                        folders.remove(folders.get(holder.getAdapterPosition()));
-                        notifyDataSetChanged();
-                    }
-                });
-                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+        holder.itemView.setOnLongClickListener(view -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setCancelable(true);
+            builder.setTitle("Delete this folder");
+            builder.setMessage("Are you sure ?");
+            builder.setPositiveButton("Yes", (dialogInterface, i) -> {
+                DBHelper.getInstance(context).deleteFolder(dbPass, (String) holder.folderTitle.getText());
+                folders.remove(folders.get(holder.getAdapterPosition()));
+                notifyItemRemoved(holder.getAdapterPosition());
+            });
+            builder.setNegativeButton(android.R.string.cancel, (dialogInterface, i) -> System.out.println("No clicked"));
+            AlertDialog dialog = builder.create();
+            dialog.show();
 
-                        Toast.makeText(context, "No clicked", Toast.LENGTH_SHORT).show();
-
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-
-                return true;
-            }
+            return true;
         });
     }
 
@@ -139,13 +114,9 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
     }
 
     public void clear() {
-        int size = folders.size();
-        if (size > 0) {
-            for (int i = 0; i < size; i++) {
-                folders.remove(0);
-            }
+            int size = folders.size();
+            folders.clear();
             notifyItemRangeChanged(0,size);
-        }
     }
 
     static public synchronized FolderAdapter getInstance(Context ct, ArrayList<Folder> folders, String dbPass){

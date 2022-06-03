@@ -1,10 +1,5 @@
 package uk.edu.le.co2103.javaprojectyr3;
 
-import android.graphics.Bitmap;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-
 public class Folder {
 
     String title;

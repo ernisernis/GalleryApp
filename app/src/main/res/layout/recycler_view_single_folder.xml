@@ -8,13 +8,15 @@
     android:layout_height="91.5dp">
 
     <TextView
-        android:layout_marginTop="16dp"
-        android:textSize="28dp"
-        android:layout_marginLeft="100dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:id="@+id/folderTitle"
-        android:text="Folder name" />
+        android:layout_width="221dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="16dp"
+        android:text="Folder name"
+        android:textSize="28dp" />
 
     <TextView
         android:layout_marginTop="53dp"

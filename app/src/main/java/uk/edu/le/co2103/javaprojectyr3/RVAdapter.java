@@ -2,23 +2,17 @@ package uk.edu.le.co2103.javaprojectyr3;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import uk.edu.le.co2103.javaprojectyr3.DBHelper.DBHelper;
 
@@ -64,37 +58,26 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
         Bitmap bmp = data1.get(position);
         holder.myImage.setImageBitmap(Bitmap.createScaledBitmap(bmp,200,250,false));
 
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                System.out.println("CLICKED LONG!!!!!!!!!");
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setCancelable(true);
-                builder.setTitle("Delete this image");
-                builder.setMessage("Are you sure?");
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        DBHelper.getInstance(context).deleteImage(dbPass, data2.get(holder.getAdapterPosition()), folderName);
-                        data1.remove(data1.get(holder.getAdapterPosition()));
-                        System.out.println(folderNumber + " DDDDDDDDDDD");
-                        folderNumber = folderNumber - 1;
-                        ((ThirdActivity)context).putCount(folderNumber);
-                        notifyDataSetChanged();
-                    }
-                });
-                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                        Toast.makeText(context, "No clicked", Toast.LENGTH_SHORT).show();
-
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-                return true;
-            }
+        holder.itemView.setOnLongClickListener(view -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setCancelable(true);
+            builder.setTitle("Delete this image");
+            builder.setMessage("Are you sure?");
+            builder.setPositiveButton("Yes", (dialogInterface, i) -> {
+                if (holder.getAdapterPosition() == 0) {
+                    ((IndividualFolderActivity)context).changeFolderImageBubble();
+                }
+                DBHelper.getInstance(context).deleteImage(dbPass, data2.get(holder.getAdapterPosition()), folderName);
+                data1.remove(data1.get(holder.getAdapterPosition()));
+                folderNumber = folderNumber - 1;
+                ((IndividualFolderActivity)context).putCount(folderNumber);
+                ((IndividualFolderActivity)context).changeActivityStatus();
+                notifyItemRemoved(holder.getAdapterPosition());
+            });
+            builder.setNegativeButton(android.R.string.cancel, (dialogInterface, i) -> Toast.makeText(context, "Button cancelled", Toast.LENGTH_SHORT).show());
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            return true;
         });
     }
 

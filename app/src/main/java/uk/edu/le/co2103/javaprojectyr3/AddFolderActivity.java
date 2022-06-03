@@ -5,8 +5,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +22,6 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.util.ArrayList;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -74,43 +71,21 @@ public class AddFolderActivity extends AppCompatActivity {
         albumTextView.setTypeface(type);
         inputFolderName.setTypeface(type);
 
-        createText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Get name of the folder and create DB table with PK as a folder name. Create 3 columns.
-//                imagesBytesDB = new ArrayList<>(DBHelper.getInstance(ThirdActivity.this).getAllImagesByteArray(finalPw));
-                if (!inputFolderName.getText().toString().equals("")) {
-                    Toast.makeText(AddFolderActivity.this, inputFolderName.getText().toString(), Toast.LENGTH_SHORT).show();
+        createText.setOnClickListener(view -> {
+            if (!inputFolderName.getText().toString().equals("")) {
+                if (inputFolderName.getText().toString().matches("[a-zA-Z ]*")) {
                     DBHelper.getInstance(AddFolderActivity.this).createFolder(dbPassword, inputFolderName.getText().toString());
                     Intent intent = new Intent(AddFolderActivity.this,FolderActivity.class);
                     startActivity(intent);
+                } else {
+                    Toast.makeText(this, "Please, do not put special characters!", Toast.LENGTH_LONG).show();
                 }
+            } else {
+                Toast.makeText(this, "Album title is empty!", Toast.LENGTH_LONG).show();
             }
         });
 
-        cancelText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
-//        createButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//            }
-//        });
-//
-//        testFolders.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                ArrayList<String> folderString = new ArrayList<>(DBHelper.getInstance(AddFolderActivity.this).getAllFoldersStringArray(dbPassword));
-//                for (int i = 0; i < folderString.size(); i++) {
-//                    System.out.println(folderString.get(i));
-//                }
-//            }
-//        });
-
+        cancelText.setOnClickListener(view -> finish());
 
     }
 

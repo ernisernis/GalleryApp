@@ -15,10 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.JavaProjectYr3">
         <activity
-            android:name=".SecondActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ThirdActivity"
+            android:name=".IndividualFolderActivity"
             android:exported="false" />
         <activity
             android:name=".FolderActivity"
@@ -27,7 +24,7 @@
             android:name=".AddFolderActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

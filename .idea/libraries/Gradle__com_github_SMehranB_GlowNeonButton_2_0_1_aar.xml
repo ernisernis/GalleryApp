@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.SMehranB:GlowNeonButton:2.0.1@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/907fc0024b9856e8e1ea05daa8fc53cd/transformed/jetified-GlowNeonButton-2.0.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/907fc0024b9856e8e1ea05daa8fc53cd/transformed/jetified-GlowNeonButton-2.0.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/907fc0024b9856e8e1ea05daa8fc53cd/transformed/jetified-GlowNeonButton-2.0.1/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.SMehranB/GlowNeonButton/2.0.1/50caa7b2cc13b9023c1ff1b57046dd2654c314e5/GlowNeonButton-2.0.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

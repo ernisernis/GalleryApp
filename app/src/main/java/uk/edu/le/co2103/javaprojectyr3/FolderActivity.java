@@ -8,10 +8,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -44,7 +41,6 @@ import uk.edu.le.co2103.javaprojectyr3.DBHelper.DBHelper;
 public class FolderActivity extends AppCompatActivity {
 
     FloatingActionButton addFolder;
-//    Button glowButton;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     String dbPass;
@@ -61,6 +57,7 @@ public class FolderActivity extends AppCompatActivity {
 
 
         recyclerView = findViewById(R.id.folderRecyclerView);
+        addFolder = findViewById(R.id.addFolderButton);
         ArrayList<Folder> emptyFolder = new ArrayList<>();
         adapter = new FolderAdapter(FolderActivity.this,emptyFolder,dbPass);
         recyclerView.setAdapter(adapter);
@@ -69,17 +66,12 @@ public class FolderActivity extends AppCompatActivity {
         // For DB
         SQLiteDatabase.loadLibs(this);
 
-
-
-        addFolder = findViewById(R.id.addFolderButton);
-        addFolder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(FolderActivity.this,AddFolderActivity.class);
-                startActivity(intent);
-            }
+        addFolder.setOnClickListener(view -> {
+            Intent intent = new Intent(FolderActivity.this,AddFolderActivity.class);
+            startActivity(intent);
         });
 
+        // Starting async function to load the folders
         MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
         myAsyncTasks.execute();
     }
@@ -128,14 +120,12 @@ public class FolderActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
-                System.out.println("Has back pressed!!!");
                 FolderAdapter.getInstance(FolderActivity.this,folders,dbPass).clear();
                 MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
                 myAsyncTasks.execute();
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
-                System.out.println("Result cancelled!!!");
             }
         }
     }
@@ -157,9 +147,9 @@ public class FolderActivity extends AppCompatActivity {
         protected String doInBackground(String... strings) {
             // Getting the folder names, first image, count from the DB
             try {
+                // Set global variable to the password of the db to easily access the DB contents.
                 dbPass = passwordToDb();
                 ArrayList<String> folderNamesDB = new ArrayList<>(DBHelper.getInstance(FolderActivity.this).getAllFoldersStringArray(dbPass));
-                // Putting the folder names to the Object (folder) list
                 for (int i = 0; i < folderNamesDB.size(); i++) {
                     int count = DBHelper.getInstance(FolderActivity.this).getFolderImageCount(dbPass, folderNamesDB.get(i));
                     byte[] firstImage = DBHelper.getInstance(FolderActivity.this).getFirstFolderImage(dbPass, folderNamesDB.get(i));
@@ -171,17 +161,14 @@ public class FolderActivity extends AppCompatActivity {
             }
 
             runOnUiThread(() -> {
-
                 adapter = new FolderAdapter(FolderActivity.this, folders,dbPass);
                 recyclerView.setAdapter(adapter);
-
                 Typeface type = Typeface.createFromAsset(getAssets(), "Cabin.ttf");
                 TextView albumText = findViewById(R.id.albumText);
                 albumText.setTypeface(type);
                 albumText.setTextColor(Color.parseColor("#fcfdfb"));
 
             });
-            // Adapter
             return "accepted";
         }
 
